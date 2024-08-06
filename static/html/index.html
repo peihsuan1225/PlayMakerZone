@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayMakerZone</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css"/>
+    <style>
+        .tag {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .tag-進攻 {
+            background-color: #007bff;
+        }
+
+        .tag-防守 {
+            background-color: #28a745;
+        }
+
+        .tag-半場 {
+            background-color: #ffc107;
+        }
+
+        .tag-全場 {
+            background-color: #dc3545;
+        }
+
+        .tag-陣地 {
+            background-color: #17a2b8;
+        }
+
+        .tag-快攻 {
+            background-color: #6f42c1;
+        }
+
+        .creator-id {
+            color: #007bff;
+            text-decoration: underline;
+        }
+
+        .difficulty {
+            display: inline-block;
+            color: gold;
+        }
+
+        .player-count {
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="navbar_insert"></div>
+    <div class="dialog_insert"></div>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8">
+                <input type="text" class="form-control" placeholder="搜索...">
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-3">
+                <h5>篩選</h5>
+                <form>
+                    <div class="form-group">
+                        <label>人數</label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="人數1" value="1">
+                            <label class="form-check-label" for="人數1">1</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="人數2" value="2">
+                            <label class="form-check-label" for="人數2">2</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="人數3" value="3">
+                            <label class="form-check-label" for="人數3">3</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="人數4" value="4">
+                            <label class="form-check-label" for="人數4">4</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="人數5" value="5">
+                            <label class="form-check-label" for="人數5">5</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>更新日期</label>
+                        <input type="date" class="form-control" placeholder="起始日期">
+                        <input type="date" class="form-control mt-2" placeholder="結束日期">
+                    </div>
+
+                    <div class="form-group">
+                        <label>模式</label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="模式進攻" value="進攻">
+                            <label class="form-check-label" for="模式進攻">進攻</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="模式防守" value="防守">
+                            <label class="form-check-label" for="模式防守">防守</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="模式半場" value="半場">
+                            <label class="form-check-label" for="模式半場">半場</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="模式全場" value="全場">
+                            <label class="form-check-label" for="模式全場">全場</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="模式陣地" value="陣地">
+                            <label class="form-check-label" for="模式陣地">陣地</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="模式快攻" value="快攻">
+                            <label class="form-check-label" for="模式快攻">快攻</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>難度</label><br>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="難度新手" value="新手">
+                            <label class="form-check-label" for="難度新手">新手<span class="difficulty"><i class="fas fa-star"></i></span></label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="難度中等" value="中等">
+                            <label class="form-check-label" for="難度中等">中等<span class="difficulty"><i class="fas fa-star"></i><i class="fas fa-star"></i></span></label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="難度職業" value="職業">
+                            <label class="form-check-label" for="難度職業">專業<span class="difficulty"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></span></label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="pic/tumbnail.png" class="card-img-top" alt="戰術縮圖">
+                            <div class="card-body">
+                                <h5 class="card-title d-inline">戰術名稱</h5>
+                                <a href="#" class="creator-id d-inline ml-2">user123</a>
+                                <p class="card-text mt-2">
+                                    <span class="tag tag-進攻">進攻</span>
+                                    <span class="tag tag-半場">半場</span>
+                                    <span class="tag tag-陣地">陣地</span>
+                                </p>
+                                <p class="card-text">
+                                    <span>難度: </span>
+                                    <span class="difficulty"><i class="fas fa-star"></i></span>
+                                    <span class="player-count">人數: 3</span>
+                                </p>
+                                <p class="card-text"><small class="text-muted">更新日期: 2024-08-05</small></p>
+                                <!-- <a href="#" class="btn btn-light"><i class="fas fa-heart"></i></a>
+                                <a href="#" class="btn btn-light"><i class="fas fa-share"></i></a>
+                                <a href="#" class="btn btn-light"><i class="fas fa-bookmark"></i></a>
+                                <a href="#" class="btn btn-light"><i class="fas fa-comment"></i></a> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="pic/tumbnail.png" class="card-img-top" alt="戰術縮圖">
+                            <div class="card-body">
+                                <h5 class="card-title d-inline">戰術名稱</h5>
+                                <a href="#" class="creator-id d-inline ml-2">user456</a>
+                                <p class="card-text mt-2">
+                                    <span class="tag tag-防守">防守</span>
+                                    <span class="tag tag-全場">全場</span>
+                                    <span class="tag tag-快攻">快攻</span>
+                                </p>
+                                <p class="card-text">
+                                    <span>難度: </span>
+                                    <span class="difficulty"><i class="fas fa-star"></i></span>
+                                    <span class="player-count">人數: 5</span>
+                                </p>
+                                <p class="card-text"><small class="text-muted">更新日期: 2024-08-05</small></p>
+                                <!-- <a href="#" class="btn btn-light"><i class="fas fa-heart"></i></a>
+                                <a href="#" class="btn btn-light"><i class="fas fa-share"></i></a>
+                                <a href="#" class="btn btn-light"><i class="fas fa-bookmark"></i></a>
+                                <a href="#" class="btn btn-light"><i class="fas fa-comment"></i></a> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <img src="pic/tumbnail.png" class="card-img-top" alt="戰術縮圖">
+                            <div class="card-body">
+                                <h5 class="card-title d-inline">戰術名稱</h5>
+                                <a href="#" class="creator-id d-inline ml-2">user789</a>
+                                <p class="card-text mt-2">
+                                    <span class="tag tag-進攻">進攻</span>
+                                    <span class="tag tag-半場">半場</span>
+                                    <span class="tag tag-陣地">陣地</span>
+                                </p>
+                                <p class="card-text">
+                                    <span>難度: </span>
+                                    <span class="difficulty"><i class="fas fa-star"></i></span>
+                                    <span class="player-count">人數: 2</span>
+                                </p>
+                                <p class="card-text"><small class="text-muted">更新日期: 2024-08-05</small></p>
+                                <!-- <a href="#" class="btn btn-light"><i class="fas fa-heart"></i></a>
+                                <a href="#" class="btn btn-light"><i class="fas fa-share"></i></a>
+                                <a href="#" class="btn btn-light"><i class="fas fa-bookmark"></i></a>
+                                <a href="#" class="btn btn-light"><i class="fas fa-comment"></i></a> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/static/js/base.js" defer></script>
+</body>
+
+</html>

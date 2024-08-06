@@ -1,0 +1,149 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
+body{
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    font-family: 'Noto Sans TC', sans-serif;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+}
+
+.faded{
+    opacity: 75%;
+}
+
+/* Navigation Bar */
+.navbar-nav img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+
+#create_tactic{
+    display: none;
+}
+
+#avatar{
+    background-image: url(/static/images/path_to_member_avatar.jpg);
+}
+
+
+/* dialog section */
+.dialog_insert{
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    top: 0;
+}
+.dialog__block{
+    display: none;
+    width: 340px;
+    border-radius: 6px;
+    background-color: #FFFFFF;
+    margin: 80px auto auto auto;
+    position: relative;
+    overflow: hidden; 
+    box-shadow: 0px 4px 60px 0px #AAAAAA;
+}
+.display{
+    display: block;
+}
+.dialog__bar{
+    height: 10px;
+    background: linear-gradient(270deg, #337788 0%, #66AABB 100%);
+}
+.dialog__text--title{
+    font-size: 24px;
+    font-weight: bold;
+    color: #666666;
+    margin: 15px;
+    text-align: center;
+}
+.dialog__icon--close{
+    position: absolute;
+    top: 27px;
+    right: 17px;
+    background-image: url(/static/pic/close.png);
+    background-size: cover;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+.dialog__input{
+    background-color: #FFFFFF;
+    border: #CCCCCC solid 1px;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #757575;
+    margin: 0 15px 10px 15px;
+    height: 47px;
+    width: calc(100% - 45px);
+    padding-left: 15px;
+}
+.dialog__btn{
+    background-color: #448899;
+    border: none;
+    border-radius: 5px;
+    color: #FFFFFF;
+    font-size: 19px;
+    margin: 0 15px 10px 15px;
+    height: 47px;
+    width: calc(100% - 30px);
+    cursor: pointer;
+}
+.dialog__text--error{
+    color: red;
+    text-align: center;
+    margin: 0 15px 15px 15px;
+}
+.dialog__text--switch{
+    font-weight: 500;
+    color: #666666;
+    margin: 0 15px 15px 15px;
+    width: calc(100% - 30px);
+    text-align: center;
+    cursor: pointer;
+}
+.dialog__text--switch:hover{
+    text-decoration:underline;
+}
+
+/* Footer */
+footer{
+    position: sticky;
+    bottom: 0;
+    width: 100vw;
+    height: 104px;
+    background-color: #757575;
+    color: #FFFFFF;
+    font-weight: bold;
+    line-height: 104px;
+    text-align: center;
+    margin-top: 100px;
+}
+
+/* 當視窗大小介於600-1200套用以下css */
+@media (min-width: 600px) and (max-width: 1200px){
+    /* Navigation Bar */
+    .navbar__block{
+        width: 100vw;
+    }
+    .navbar__text{
+        margin-left: 10px;
+    }
+}
+
+/* 當視窗大小介於360-600套用以下css */
+@media (min-width: 360px) and (max-width: 600px){
+    /* Navigation Bar */
+    .navbar__block{
+        width: 100vw;
+    }
+    .navbar__text{
+        margin-left: 10px;
+    }
+}

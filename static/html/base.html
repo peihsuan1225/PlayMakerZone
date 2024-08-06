@@ -1,0 +1,52 @@
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">PlayMakerZone</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="create_tactic">建立戰術</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="signin_signup">登入/註冊</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" id="avatar"></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+  
+  <!-- dialog section -->
+  <div class="dialog">
+    <!-- 登入會員 -->
+    <div class="dialog__block" id="sign_in">
+      <div class="dialog__bar"></div>
+      <div class="dialog__text--title">登入會員帳號</div>
+      <div class="dialog__icon--close"></div>
+      <div><input class="dialog__input" id="signin_email_input" placeholder="輸入電子信箱" /></div>
+      <div><input type="password" class="dialog__input" id="signin_password_input" placeholder="輸入密碼" /></div>
+      <button class="dialog__btn" id="sign_in_btn">登入帳戶</button>
+      <div class="dialog__text--error" id="signin_error_message"></div>
+      <div class="dialog__text--switch">還沒有帳戶?點此註冊</div>
+    </div>
+    <!-- 註冊會員 -->
+    <div class="dialog__block" id="sign_up">
+      <div class="dialog__bar"></div>
+      <div class="dialog__text--title">註冊會員帳號</div>
+      <div class="dialog__icon--close"></div>
+      <div><input class="dialog__input" id="signup_name_input" placeholder="輸入使用者名稱" /></div>
+      <div><input class="dialog__input" id="signup_email_input" placeholder="輸入電子信箱" /></div>
+      <div><input type="password" class="dialog__input" id="signup_password_input" placeholder="輸入密碼" /></div>
+      <label class="dialog__label">上傳頭像</label>
+      <input type="file" class="dialog__file-input">
+      <label for="file-input" class="dialog__file-label">Choose File</label>
+      <div class="dialog__file-status">no file chosen</div>
+      <button class="dialog__btn" id="sign_up_btn">註冊新帳戶</button>
+      <div class="dialog__text--error" id="signup_error_message"></div>
+      <div class="dialog__text--switch">已經有帳戶了?點此登入</div>
+    </div>
+  </div>
+  
