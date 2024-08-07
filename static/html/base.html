@@ -1,23 +1,41 @@
 <!-- Navigation Bar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">PlayMakerZone</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="#" id="create_tactic">建立戰術</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" id="signin_signup">登入/註冊</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" id="avatar"></a>
-            </li>
-        </ul>
-    </div>
+<nav class="navbar navbar-expand-sm navbar-light bg-light">
+  <a class="navbar-brand" href="">PlayMakerZone</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span> 
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto align-items-center">
+        <li class="nav-item">
+          <a class="nav-link" id="create_tactic">建立戰術</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="signin_signup">登入/註冊</a>
+        </li>
+        <li class="nav-item" id="avatar_container">
+            <a class="nav-link" id="avatar">
+              <img src="" alt="avatar" id="avatar_img">
+            </a>
+            <!-- Popup menu -->
+            <div class="popup-menu" id="popup-menu">
+              <a href="/memberCenter" class="popup-item">
+                <img src="/static/images/member.jpg" alt="Member Center" class="popup-icon">會員中心
+              </a>
+              <a href="/myTactics" class="popup-item">
+                <img src="/static/images/tactics-icon.png" alt="My Tactics" class="popup-icon">我的戰術
+              </a>
+              <a href="/favoriteTactics" class="popup-item">
+                <img src="/static/images/favorite-icon.png" alt="Favorite Tactics" class="popup-icon">收藏戰術
+              </a>
+              <a id="logout" class="popup-item">
+                <img src="/static/images/logout-icon.png" alt="Logout" class="popup-icon">登出
+              </a>
+            </div>
+        </li>
+      </ul>
+  </div>
 </nav>
+
   
   <!-- dialog section -->
   <div class="dialog">
@@ -40,10 +58,8 @@
       <div><input class="dialog__input" id="signup_name_input" placeholder="輸入使用者名稱" /></div>
       <div><input class="dialog__input" id="signup_email_input" placeholder="輸入電子信箱" /></div>
       <div><input type="password" class="dialog__input" id="signup_password_input" placeholder="輸入密碼" /></div>
-      <label class="dialog__label">上傳頭像</label>
-      <input type="file" class="dialog__file-input">
-      <label for="file-input" class="dialog__file-label">Choose File</label>
-      <div class="dialog__file-status">no file chosen</div>
+      <!-- <label class="dialog__label">上傳頭像(選填)</label>
+      <input type="file" class="dialog__file-input"> -->
       <button class="dialog__btn" id="sign_up_btn">註冊新帳戶</button>
       <div class="dialog__text--error" id="signup_error_message"></div>
       <div class="dialog__text--switch">已經有帳戶了?點此登入</div>

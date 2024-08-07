@@ -23,69 +23,83 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error('Error: Element with class "navbar" not found in base.html.');
         }
 
-        // // 獲取預定行程
-        // const bookingbtn = document.querySelector("#booking");
-        // bookingbtn.addEventListener("click", async() =>{
-        //     if (token){
-        //         await fetch("/api/user/auth", {
-        //             method: "GET",
-        //             headers: {
-        //                 "Authorization": `Bearer ${token}`
-        //             }
-        //         })
-        //         .then(response => {
-        //             if(!response.ok){
-        //                 signinSignup.click();
-        //             }
-        //             return response.json();
-        //         })
-        //         .then(data => {
-        //             if(data && data.data){
-        //                 window.location.href = "/booking"
-        //             }
-        //             else{
-        //                 signinSignup.click();
-        //             }
-        //         })
-        //     }else{
-        //         signinSignup.click();
-        //     }
-        // });
-
-        // 登入狀態驗證，確認是否有登入token
-        const token = localStorage.getItem("token");
+        const createTactic = document.querySelector("#create_tactic");
         const signinSignup = document.querySelector("#signin_signup");
-        const userAvatar = document.querySelector("#avatar")
+        const userAvatarContainer = document.querySelector("#avatar_container");
+        const userAvatar = document.querySelector("#avatar_img");
+        const avatar = document.querySelector("#avatar");
+        const popupMenu = document.querySelector("#popup-menu");
 
-        if (token){
-            fetch("/api/user/auth", {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            })
-            .then(response => {
-                if(!response.ok){
-                    throw new Error("Token 已到期或無效");
-                }
-                return response.json();
-            })
-            .then(data => {
-                if(data && data.data){
-                    signinSignup.style.display = "none";
-                    userAvatar.style.backgroundImage = `url(${data.data.avatar})`;
-                    let userInfo = JSON.stringify(data.data);
-                    localStorage.setItem("userInfo", userInfo);
-                }
-                else{
+
+         // Function to update navbar based on login status
+         const updateNavbar = (token) => {
+            if (token) {
+                fetch("/api/user/auth", {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Token expired or invalid");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data && data.data) {
+                        signinSignup.style.display = "none";
+                        userAvatarContainer.style.display = "block";
+                        userAvatar.src = data.data.avatar || '/static/images/default_avatar.jpg';
+                        createTactic.href = "/createTactic";
+                    } else {
+                        signinSignup.style.display = "block";
+                        userAvatarContainer.style.display = "none";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
                     signinSignup.style.display = "block";
-                }
-            })
-            .catch(error =>{
-                console.error("Error:", error);
+                    userAvatarContainer.style.display = "none";
+                });
+            } else {
                 signinSignup.style.display = "block";
-            });
-        }
+                userAvatarContainer.style.display = "none";
+            }
+        };
+        
+        const token = localStorage.getItem("token");
+        updateNavbar(token);
+
+
+        // 點擊建立戰術引導登入或是到建立戰術頁面
+        createTactic.addEventListener("click", async() =>{
+            if (token){
+                await fetch("/api/user/auth", {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
+                .then(response => {
+                    if(!response.ok){
+                        signinSignup.click();
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if(data && data.data){
+                        window.location.href = "/createTactic"
+                    }
+                    else{
+                        signinSignup.click();
+                    }
+                })
+            }else{
+                signinSignup.click();
+            }
+        });
+
 
         // 尋找並插入 dialog
         let dialogInsert = tempDiv.querySelector(".dialog")
@@ -184,14 +198,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 const nameInput = form.querySelector("#signup_name_input").value.trim();
                 const emailInput = form.querySelector("#signup_email_input").value.trim();
                 const passwordInput = form.querySelector("#signup_password_input").value.trim(); 
-                const imageInput = document.querySelector(".dialog__file-input");
+                // const imageInput = document.querySelector(".dialog__file-input");
 
                 const request = {
                     username: nameInput,
                     email: emailInput,
-                    password: passwordInput,
-                    avatar: imageInput.files[0],
+                    password: passwordInput
                 };
+                // formData.append('avatar', imageInput.files[0]);
+                
+                console.log(request);
                 try {
                     const response = await fetch("/api/user",{
                         method: "POST",
@@ -226,7 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.querySelector("#signup_password_input").value = "";
                 document.querySelector("#signup_error_message").textContent = "";
             }
-
+            
             // 點擊登入註冊>跳出視窗
             signinSignup.addEventListener("click", () =>{
                 const signinSignup = document.querySelector("#signin_signup");
@@ -253,6 +269,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 })            
             });
 
+            // 點擊 avatar 顯示/隱藏彈出菜單
+            avatar.addEventListener("click", () => {
+                const isVisible = popupMenu.style.display === "block";
+                popupMenu.style.display = isVisible ? "none" : "block";
+            });
+
+            // 點擊其他地方隱藏彈出菜單
+            document.addEventListener("click", (event) => {
+                if (!avatar.contains(event.target) && !popupMenu.contains(event.target)) {
+                    popupMenu.style.display = "none";
+                }
+            });
+
+            // 登出按鈕點擊事件
+            const logoutButton = document.querySelector("#logout");
+            logoutButton.addEventListener("click", () => {
+                localStorage.removeItem("token");
+                localStorage.removeItem("userInfo");
+                window.location.reload();
+            });
+
             // 登入會員
             signinBtn.addEventListener("click", (event) => {
             const signinform = document.querySelector("#sign_in");
@@ -277,22 +314,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-
-// // 點擊登入註冊>跳出視窗;點擊登出系統>清除token並重整
-// signinSignup.addEventListener("click", () =>{
-//     const token = localStorage.getItem("token");
-//     const signinSignup = document.querySelector("#signin_signup");
-
-//     if (signinSignup) {
-//         if (token) {
-//             localStorage.removeItem("token");
-//             localStorage.removeItem("userInfo");
-//             signinSignup.textContent = "登入/註冊";
-//             window.location.reload();
-//         }
-//         else{
-//             clearSigninFrom();
-//             popUpFun();
-//         }
-//     }            
-// });

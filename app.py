@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 from routes import home
+from routes import user
 
 load_dotenv()
 
@@ -19,6 +20,7 @@ app = FastAPI()
 # )
 
 app.include_router(home.router)
+app.include_router(user.router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
