@@ -1,0 +1,66 @@
+.progress-container {
+    margin: 30px auto;
+    display: flex;
+    justify-content: center;
+    width: 80%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.step {
+    font-size: 18px;
+    color: #888;
+    text-align: center;
+    flex-grow: 1;
+    padding: 10px;
+}
+
+.step.completed {
+    color: #fff;
+    font-weight: bold;
+    background-color: #007bff;
+}
+
+.step.upcoming {
+    color: #888;
+    background-color: #ccc;
+}
+
+#basicInfoForm {
+    width: 80%;
+    margin: 5px auto;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.option-blocks {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.option {
+    background-color: #a1a9b3;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+
+.option:hover {
+    background-color: #28a745;
+}
+
+.option.selected {
+    background-color: #218838;
+}
+
+.btn {
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    width: 200px; /* 控制按鈕寬度，可以根據需要調整 */
+}

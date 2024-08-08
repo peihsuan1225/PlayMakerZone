@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Form, UploadFile, File, Depends
 from fastapi.responses import JSONResponse
 from model.model import SignupRequest, SigninRequest
-from controller.controller import sign_up_user, sign_in_user, get_member_info
+from controller.controller_user import sign_up_user, sign_in_user, get_member_info
 from utils import get_current_user
 
 router = APIRouter()

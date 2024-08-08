@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 
 from routes import home
 from routes import user
+from routes import tactic
 
 load_dotenv()
 
@@ -21,9 +22,7 @@ app = FastAPI()
 
 app.include_router(home.router)
 app.include_router(user.router)
+app.include_router(tactic.router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.get("/tactic/{id}", include_in_schema=False)
-async def attraction(request: Request, id: int):
-	return FileResponse("./static/tactic.html", media_type="text/html")

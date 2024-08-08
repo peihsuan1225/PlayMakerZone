@@ -1,7 +1,7 @@
 from fastapi import UploadFile
 from passlib.hash import bcrypt
-import mysql.connector
 import jwt
+import mysql.connector
 from datetime import datetime, timezone, timedelta
 from config import connection_pool
 from utils import SECRET_KEY, ALGORITHM
@@ -25,7 +25,6 @@ async def sign_up_user(signup_input: SignupRequest):
     try:
         conn = connection_pool.get_connection()
         cursor = conn.cursor(dictionary=True)
-        print(signup_input)
 
         # 檢查 email 是否已存在
         check_email_exist_query = '''
