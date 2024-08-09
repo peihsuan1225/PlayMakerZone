@@ -32,6 +32,7 @@ async def create_tactic_info(tactic_input: TacticRequest):
         #     tactic_input.status, 
         #     current_time, 
         #     current_time)
+        
         insert_query = '''
         INSERT INTO tactics_info (name, player, tags, level, member_id, status, update_time, create_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         '''
