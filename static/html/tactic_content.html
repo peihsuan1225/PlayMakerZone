@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayMakerZone</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/tactic_content.css"/>
+</head>
+
+<body>
+    <div class="dialog_insert"></div>
+    <div class="content">
+    <div class="navbar_insert"></div>
+
+    <div class="progress-container">
+        <div class="step upcoming">設定基本資訊</div>
+        <div class="step completed">建立戰術內容</div>
+    </div>
+
+    <div id="tactic-board">
+        <div id="background"></div>
+        <div id="players">
+            <!-- A队球员 -->
+            <div id="A1" class="player" draggable="true">1</div>
+            <div id="A2" class="player" draggable="true">2</div>
+            <div id="A3" class="player" draggable="true">3</div>
+            <div id="A4" class="player" draggable="true">4</div>
+            <div id="A5" class="player" draggable="true">5</div>
+
+            <!-- B队球员 -->
+            <div id="B1" class="player" draggable="true">1</div>
+            <div id="B2" class="player" draggable="true">2</div>
+            <div id="B3" class="player" draggable="true">3</div>
+            <div id="B4" class="player" draggable="true">4</div>
+            <div id="B5" class="player" draggable="true">5</div>
+        </div>
+        <div id="ball" draggable="true">Ball</div>
+        <textarea id="description" placeholder="Enter description here..."></textarea>
+        <button id="prev-step">Previous Step</button>
+        <button id="next-step">Next Step</button>
+        <button id="save">Save</button>
+    </div>
+    
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="/static/js/base.js" defer></script>
+    <script src="/static/js/tactic_content.js" defer></script>
+
+</body>
+
+</html>

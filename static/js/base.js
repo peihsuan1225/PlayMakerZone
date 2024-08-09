@@ -287,7 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
             logoutButton.addEventListener("click", () => {
                 localStorage.removeItem("token");
                 localStorage.removeItem("userInfo");
-                window.location.reload();
+                window.location.href = '/';
             });
 
             // 登入會員

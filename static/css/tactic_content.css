@@ -1,0 +1,89 @@
+.progress-container {
+    margin: 30px auto;
+    display: flex;
+    justify-content: center;
+    width: 80%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.step {
+    font-size: 18px;
+    color: #888;
+    text-align: center;
+    flex-grow: 1;
+    padding: 10px;
+}
+
+.step.completed {
+    color: #fff;
+    font-weight: bold;
+    background-color: #007bff;
+}
+
+.step.upcoming {
+    color: #888;
+    background-color: #ccc;
+}
+
+/* styles.css */
+
+#tactic-board {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    border: 1px solid black;
+}
+
+#background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+}
+
+.player {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: red;
+    color: white;
+    text-align: center;
+    line-height: 40px;
+    cursor: pointer;
+}
+
+#ball {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: orange;
+    cursor: pointer;
+}
+
+/* 初始化位置 */
+#A1 { top: 50px; left: 50px; }
+#A2 { top: 50px; left: 150px; }
+#A3 { top: 50px; left: 250px; }
+#A4 { top: 150px; left: 50px; }
+#A5 { top: 150px; left: 150px; }
+
+#B1 { top: 450px; left: 50px; }
+#B2 { top: 450px; left: 150px; }
+#B3 { top: 450px; left: 250px; }
+#B4 { top: 550px; left: 50px; }
+#B5 { top: 550px; left: 150px; }
+
+#ball { top: 300px; left: 400px; }
+
+textarea {
+    position: absolute;
+    bottom: 10px;
+    /* textarea styling */
+}
+
+button {
+    position: absolute;
+    /* button styling */
+}

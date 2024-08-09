@@ -17,3 +17,11 @@ class TacticRequest(BaseModel):
     tags: List[str]
     level: str
     status: str
+
+class TacticContentRequest(BaseModel):
+    tactic_id: int
+    step: int
+    player_A: List[str]
+    player_B: List[str]
+    ball: List[str]
+    description: str
