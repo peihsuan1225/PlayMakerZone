@@ -21,28 +21,39 @@
         <div class="step completed">建立戰術內容</div>
     </div>
 
-    <div id="tactic-board">
-        <div id="background"></div>
-        <div id="players">
-            <!-- A队球员 -->
-            <div id="A1" class="player" draggable="true">1</div>
-            <div id="A2" class="player" draggable="true">2</div>
-            <div id="A3" class="player" draggable="true">3</div>
-            <div id="A4" class="player" draggable="true">4</div>
-            <div id="A5" class="player" draggable="true">5</div>
-
-            <!-- B队球员 -->
-            <div id="B1" class="player" draggable="true">1</div>
-            <div id="B2" class="player" draggable="true">2</div>
-            <div id="B3" class="player" draggable="true">3</div>
-            <div id="B4" class="player" draggable="true">4</div>
-            <div id="B5" class="player" draggable="true">5</div>
+    <div id="tactic-steps">
+        <div id="steps-display">
+            <button id="prev-step" class="btn btn-secondary">Previous</button>
+            <div id="step-info">
+                <span id="current-step">1</span> / <span id="total-steps">1</span>
+            </div>
+            <button id="next-step" class="btn btn-secondary">Next</button>
         </div>
-        <div id="ball" draggable="true">Ball</div>
-        <textarea id="description" placeholder="Enter description here..."></textarea>
-        <button id="prev-step">Previous Step</button>
-        <button id="next-step">Next Step</button>
-        <button id="save">Save</button>
+        <button id="save" class="btn btn-primary ml-auto">Save</button>
+    </div>
+
+    <div id="tactic-board">
+        <div id="court">
+            <div id="players"></div>
+            <div id="ball" draggable="true"></div>
+        </div>
+    </div>
+    <textarea id="description" placeholder="Enter description here..."></textarea>
+
+    <div id="playersbox">
+        <!-- A team -->
+        <div id="A1" class="player" draggable="true">1</div>
+        <div id="A2" class="player" draggable="true">2</div>
+        <div id="A3" class="player" draggable="true">3</div>
+        <div id="A4" class="player" draggable="true">4</div>
+        <div id="A5" class="player" draggable="true">5</div>
+
+        <!-- B team -->
+        <div id="B1" class="player" draggable="true">1</div>
+        <div id="B2" class="player" draggable="true">2</div>
+        <div id="B3" class="player" draggable="true">3</div>
+        <div id="B4" class="player" draggable="true">4</div>
+        <div id="B5" class="player" draggable="true">5</div>
     </div>
     
     </div>

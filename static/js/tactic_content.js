@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => {
         if (data.error) {
             console.error('Error fetching tactic data:', data.message);
+            window.location.href = "/createTactic";
             return;
         }
         else{
@@ -26,14 +27,19 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(error => console.error('Error fetching tactic data:', error));
 
     function setupBoard(tactic) {
-        const background = document.getElementById('background');
         const players = document.querySelectorAll('.player, #ball');
-        const description = document.getElementById('description');
-        const tacticBoard = document.getElementById('tactic-board');
+        const description = document.querySelector('#description');
+        const tacticBoard = document.querySelector('#tactic-board');
+        const court = document.querySelector("#court");
+        const tagsArray = JSON.parse(tactic.tags);
         
-        // Set background image based on tags[0]
-        const backgroundImage = tactic.tags[0] === '全場' ? 'fullcourt.png' : 'halfcourt.png';
-        background.style.backgroundImage = `url(/static/images/${backgroundImage})`;
+        // Set background image based on tagsArray[0]
+        // console.log(tagsArray);
+        // console.dir(tagsArray[0]);
+
+        const backgroundImage = tagsArray[0] === '全場' ? 'fullcourt.png' : 'halfcourt.png';
+
+        court.style.backgroundImage = `url(/static/images/${backgroundImage})`;
 
         players.forEach(player => {
             player.addEventListener('dragstart', dragStart);
@@ -50,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setupDragAndDrop() {
-        const tacticBoard = document.getElementById('tactic-board');
+        const tacticBoard = document.querySelector('#tactic-board');
         const players = document.querySelectorAll('.player, #ball');
 
         players.forEach(player => {
@@ -81,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         draggableElement.style.visibility = 'visible';
     }
 
-    document.getElementById('save').addEventListener('click', () => {
+    document.querySelector('#save').addEventListener('click', () => {
         const playerPositionsA = {};
         const playerPositionsB = {};
         const playersA = document.querySelectorAll('.player.A');
@@ -104,11 +110,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Similarly handle ball position and send data to backend for saving
     });
 
-    document.getElementById('prev-step').addEventListener('click', () => {
+    document.querySelector('#prev-step').addEventListener('click', () => {
         // Handle switching to the previous step
     });
 
-    document.getElementById('next-step').addEventListener('click', () => {
+    document.querySelector('#next-step').addEventListener('click', () => {
         // Handle switching to the next step
     });
 });
