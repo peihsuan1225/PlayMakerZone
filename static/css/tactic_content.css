@@ -44,16 +44,23 @@
     font-weight: bold;
 }
 
+#add-step{
+    background-image: url(/static/images/add.png);
+    background-size: cover;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background-color: transparent;
+}
+
 #save {
     margin-left: auto;
 }
 
 #tactic-board {
     width: 80%;
-    height: 380px;
-    border: 1px solid black;
+    height: 800px;
     margin: 0 auto;
-    position: relative;
 }
 
 #court {
@@ -61,7 +68,6 @@
     height: 100%;
     background-size: contain;
     background-repeat: no-repeat;
-    position: relative;
 }
 
 textarea {
@@ -70,21 +76,18 @@ textarea {
     height: 80px;
 }
 
-#playersbox {
-    width: 80%;
-    margin: 20px auto;
-    display: grid;
-    grid-template-columns: repeat(10, 80px);
-}
 
 .player {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
-    color: white;
     text-align: center;
-    line-height: 40px;
-    cursor: pointer;
+    line-height: 30px;
+    margin: 1rem 0 0 1rem;
+    color: white;
+    touch-action: none;
+    user-select: none;
+    transform: translate(0px, 0px);
 }
 
 #A1, #A2, #A3, #A4, #A5{
@@ -96,28 +99,41 @@ textarea {
 }
 
 #ball {
-    position: absolute;
-    width: 50px;
-    height: 50px;
+    width: 25px;
+    height: 25px;
     border-radius: 50%;
-    cursor: pointer;
     background-image: url(/static/images/ball.png);
     background-size: cover;
+    margin: 1rem 0 0 1rem;
+    border: 1px solid black;
 }
 
-/* 初始化位置 */
-#A1 { top: 50px; left: 50px; }
-#A2 { top: 50px; left: 150px; }
-#A3 { top: 50px; left: 250px; }
-#A4 { top: 150px; left: 50px; }
-#A5 { top: 150px; left: 150px; }
 
-#B1 { top: 450px; left: 50px; }
-#B2 { top: 450px; left: 150px; }
-#B3 { top: 450px; left: 250px; }
-#B4 { top: 550px; left: 50px; }
-#B5 { top: 550px; left: 150px; }
+@media (min-width: 1000px) and (max-width: 1920px){
+    .player {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 1.2em;
+    }
+    #ball {
+        width: 35px;
+        height: 35px;
+    }
+}
 
-#ball { top: 300px; left: 400px; }
+
+@media (min-width: 360px) and (max-width: 450px){
+    .player {
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        font-size: 0.8em;
+    }
+    #ball {
+        width: 15px;
+        height: 15px;
+    }
+}
 
 

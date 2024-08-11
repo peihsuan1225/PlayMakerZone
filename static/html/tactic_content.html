@@ -26,6 +26,7 @@
             <button id="prev-step" class="btn btn-secondary">Previous</button>
             <div id="step-info">
                 <span id="current-step">1</span> / <span id="total-steps">1</span>
+                <button id="add-step"></button>
             </div>
             <button id="next-step" class="btn btn-secondary">Next</button>
         </div>
@@ -34,32 +35,32 @@
 
     <div id="tactic-board">
         <div id="court">
-            <div id="players"></div>
-            <div id="ball" draggable="true"></div>
+            
+            <!-- <div id="A1" class="player draggable">1</div>
+            <div id="A2" class="player draggable">2</div>
+            <div id="A3" class="player draggable">3</div>
+            <div id="A4" class="player draggable">4</div>
+            <div id="A5" class="player draggable">5</div>
+    
+            <div id="B1" class="player draggable">1</div>
+            <div id="B2" class="player draggable">2</div>
+            <div id="B3" class="player draggable">3</div>
+            <div id="B4" class="player draggable">4</div>
+            <div id="B5" class="player draggable">5</div>
+
+            <div id="ball" class=" draggable"></div> -->
+
         </div>
     </div>
-    <textarea id="description" placeholder="Enter description here..."></textarea>
+    <!-- <textarea id="description" placeholder="Enter description here..."></textarea> -->
 
-    <div id="playersbox">
-        <!-- A team -->
-        <div id="A1" class="player" draggable="true">1</div>
-        <div id="A2" class="player" draggable="true">2</div>
-        <div id="A3" class="player" draggable="true">3</div>
-        <div id="A4" class="player" draggable="true">4</div>
-        <div id="A5" class="player" draggable="true">5</div>
-
-        <!-- B team -->
-        <div id="B1" class="player" draggable="true">1</div>
-        <div id="B2" class="player" draggable="true">2</div>
-        <div id="B3" class="player" draggable="true">3</div>
-        <div id="B4" class="player" draggable="true">4</div>
-        <div id="B5" class="player" draggable="true">5</div>
-    </div>
+ 
     
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script src="/static/js/base.js" defer></script>
     <script src="/static/js/tactic_content.js" defer></script>
 
