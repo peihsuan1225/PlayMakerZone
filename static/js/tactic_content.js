@@ -184,7 +184,109 @@ document.addEventListener('DOMContentLoaded', () => {
 
     saveButton.addEventListener('click', () => {
         recordPositions(); // 记录位置
-        // 这里你可以添加保存的逻辑
+
+        const tacticId = localStorage.getItem('tactic_id');
+        const totalSteps = parseInt(document.querySelector('#total-steps').innerText);
+        // Loop through each step and save its data
+        for (let step = 1; step <= totalSteps; step++) {
+            const positionsKey = `positions_step_${step}`;
+            const stepPositions = JSON.parse(localStorage.getItem(positionsKey)) || {};
+
+        // Extract positions for players and ball
+        const playerA = [];
+        const playerB = [];
+        let ball = [];
+
+        for (const [key, { x, y }] of Object.entries(stepPositions)) {
+            if (key.startsWith('A')) {
+                playerA.push({ id: key, x, y });
+            } else if (key.startsWith('B')) {
+                playerB.push({ id: key, x, y });
+            } else if (key === 'ball') {
+                ball = [{ id: key, x, y }];
+            }
+        }
+
+        // Create the payload for each step
+        const payload = {
+            tactic_id: parseInt(tacticId),
+            step: step,
+            player_A: playerA,
+            player_B: playerB,
+            ball: ball,
+            description: null, // Save description as null
+        };
+
+        // Send POST request for each step
+        fetch('/api/tactic/content', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                console.error('Error saving tactic content:', data.message);
+            } else {
+                console.log(`Successfully saved content for step ${step}`);
+                alert('戰術內容已成功儲存');
+            }
+        })
+        .catch(error => console.error('Error saving tactic content:', error));
+    }                
     });
+
+    let isPlaying = false; // 初始化播放狀態為停止
+    let playInterval;
+
+    const playStopButton = document.querySelector('#play_stop');
+    playStopButton.style.backgroundImage = 'url(/static/images/play.png)'; // 初始化按鈕為播放圖標
+
+    playStopButton.addEventListener('click', () => {
+        if (isPlaying) {
+            stopPlay();
+            enableDrag();
+        } else {
+            recordPositions();
+            startPlay();
+            disableDrag();
+        }
+    });
+
+    function startPlay() {
+        isPlaying = true;
+        playStopButton.style.backgroundImage = 'url(/static/images/stop.png)'; // 切換按鈕為停止圖標
+        playInterval = setInterval(() => {
+            nextStepFunction();
+        }, 500); // 每0.5秒更新一步，你可以調整這個速度
+    }
+
+    function stopPlay() {
+        isPlaying = false;
+        playStopButton.style.backgroundImage = 'url(/static/images/play.png)'; // 切換按鈕為播放圖標
+        clearInterval(playInterval); // 清除定時器，停止播放
+    }
+
+    function disableDrag() {
+        interact('.draggable').draggable(false);
+    }
+
+    function enableDrag() {
+        interact('.draggable').draggable(true);
+    }
+
+
+    function nextStepFunction() {
+        if (currentStep_number < totalSteps_number) {
+            currentStep_number++;
+        } else {
+            currentStep_number = 1; // 如果到達最後一步，重新從第一步開始
+        }
+        document.querySelector('#current-step').innerText = currentStep_number;
+        loadPositions(); // 載入該步驟的記錄位置
+    }
+
 
 });
