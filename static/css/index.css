@@ -1,0 +1,47 @@
+.tag {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 2px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+.tag-進攻 {
+    background-color: #007bff;
+}
+
+.tag-防守 {
+    background-color: #28a745;
+}
+
+.tag-半場 {
+    background-color: #ffc107;
+}
+
+.tag-全場 {
+    background-color: #dc3545;
+}
+
+.tag-陣地 {
+    background-color: #17a2b8;
+}
+
+.tag-快攻 {
+    background-color: #6f42c1;
+}
+
+.creator-id {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.difficulty {
+    display: inline-block;
+    color: gold;
+}
+
+.player-count {
+    font-size: 0.9rem;
+    color: #333;
+}

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Dict, Optional
 
 class SignupRequest(BaseModel):
     username: str
@@ -21,7 +21,9 @@ class TacticRequest(BaseModel):
 class TacticContentRequest(BaseModel):
     tactic_id: int
     step: int
-    player_A: List[str]
-    player_B: List[str]
-    ball: List[str]
-    description: str
+    player_A: List[Dict]
+    player_B: List[Dict]
+    ball: List[Dict]
+    description: Optional[str] = None
+
+

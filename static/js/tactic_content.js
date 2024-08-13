@@ -187,55 +187,76 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const tacticId = localStorage.getItem('tactic_id');
         const totalSteps = parseInt(document.querySelector('#total-steps').innerText);
+        const promises = []; // 用于存储所有的保存请求的 Promise
+    
         // Loop through each step and save its data
         for (let step = 1; step <= totalSteps; step++) {
             const positionsKey = `positions_step_${step}`;
             const stepPositions = JSON.parse(localStorage.getItem(positionsKey)) || {};
-
-        // Extract positions for players and ball
-        const playerA = [];
-        const playerB = [];
-        let ball = [];
-
-        for (const [key, { x, y }] of Object.entries(stepPositions)) {
-            if (key.startsWith('A')) {
-                playerA.push({ id: key, x, y });
-            } else if (key.startsWith('B')) {
-                playerB.push({ id: key, x, y });
-            } else if (key === 'ball') {
-                ball = [{ id: key, x, y }];
+    
+            // Extract positions for players and ball
+            const playerA = [];
+            const playerB = [];
+            let ball = [];
+    
+            for (const [key, { x, y }] of Object.entries(stepPositions)) {
+                if (key.startsWith('A')) {
+                    playerA.push({ id: key, x, y });
+                } else if (key.startsWith('B')) {
+                    playerB.push({ id: key, x, y });
+                } else if (key === 'ball') {
+                    ball = [{ id: key, x, y }];
+                }
             }
+    
+            // Create the payload for each step
+            const payload = {
+                tactic_id: parseInt(tacticId),
+                step: parseInt(step),
+                player_A: playerA,
+                player_B: playerB,
+                ball: ball,
+                description: null, // Save description as null
+            };
+    
+            // console.log(payload);
+    
+            // Send POST request for each step and add the promise to the array
+            const promise = fetch('/api/tactic/content', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    console.error('Error saving tactic content:', data.message);
+                    throw new Error(data.message); // 抛出错误以便 Promise.all 处理
+                } else {
+                    // console.log(data);
+                    console.log(`Successfully saved content for step ${step}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error saving tactic content:', error);
+                throw error; // 确保在出现错误时捕获异常
+            });
+    
+            promises.push(promise); // 将每个请求的 promise 加入数组
         }
-
-        // Create the payload for each step
-        const payload = {
-            tactic_id: parseInt(tacticId),
-            step: step,
-            player_A: playerA,
-            player_B: playerB,
-            ball: ball,
-            description: null, // Save description as null
-        };
-
-        // Send POST request for each step
-        fetch('/api/tactic/content', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                console.error('Error saving tactic content:', data.message);
-            } else {
-                console.log(`Successfully saved content for step ${step}`);
+    
+        // 等待所有请求完成
+        Promise.all(promises)
+            .then(() => {
                 alert('戰術內容已成功儲存');
-            }
-        })
-        .catch(error => console.error('Error saving tactic content:', error));
-    }                
+                window.location.href = "/myTactic"
+            })
+            .catch(error => {
+                console.error('One or more steps failed to save:', error);
+                alert('某些步驟未能成功保存，請檢查錯誤。');
+            });
     });
 
     let isPlaying = false; // 初始化播放狀態為停止

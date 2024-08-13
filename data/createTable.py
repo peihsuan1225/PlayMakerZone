@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS tactic_details (
     player_A JSON NOT NULL,
     player_B JSON NOT NULL,
     ball JSON NOT NULL,
-    description VARCHAR(320) NOT NULL,
+    description VARCHAR(320),
     FOREIGN KEY (tactic_id) REFERENCES tactics_info(id)
 )
 '''

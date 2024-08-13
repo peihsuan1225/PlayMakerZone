@@ -23,7 +23,7 @@ async def create_tactic(tactic_input: TacticRequest):
     return JSONResponse(content=response_data, status_code=status_code)
 
 @router.get("/createTactic/content", response_class=FileResponse)
-async def get_homepage(request: Request):
+async def get_page(request: Request):
     return FileResponse("./static/html/tactic_content.html", media_type="text/html")
 
 @router.get("/api/tactic/latest")
