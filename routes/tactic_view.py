@@ -10,8 +10,20 @@ router = APIRouter()
 @router.get("/api/tactics")
 async def get_tactics(
     page: int = Query(0, ge=0),
-    keyword: Optional[str] = Query(None),
-    tags: List[str] = Query([])
+    search: Optional[str] = Query(None),
+    playerCounts: Optional[str] = Query([]),
+    dateStart: Optional[str] = Query(None),
+    dateEnd: Optional[str] = Query(None),
+    modes: Optional[List[str]] = Query([]),
+    difficulties: Optional[List[str]] = Query([])
 ):
-    response_data, status_code = await get_searched_tactics(page, keyword, tags)
+    response_data, status_code = await get_searched_tactics(
+        page=page,
+        keyword=search,
+        playerCounts=playerCounts,
+        dateStart=dateStart,
+        dateEnd=dateEnd,
+        modes=modes,
+        difficulties=difficulties
+    )
     return JSONResponse(content=response_data, status_code=status_code)

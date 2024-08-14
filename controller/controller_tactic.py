@@ -9,8 +9,12 @@ from typing import List, Optional, Dict, Any, Tuple
 async def get_searched_tactics(
     page: int,
     keyword: Optional[str] = None,
-    tags: Optional[List[str]] = None
-)-> Tuple[Dict[str, Any], int]:
+    playerCounts: Optional[str] = None,
+    dateStart: Optional[str] = None,
+    dateEnd: Optional[str] = None,
+    modes: Optional[List[str]] = None,
+    difficulties: Optional[List[str]] = None
+) -> Tuple[Dict[str, Any], int]:
     tactics_per_page = 12
     offset = page * tactics_per_page
 
@@ -39,15 +43,42 @@ async def get_searched_tactics(
             conditions.append("(ti.name LIKE %s)")
             params.append(f"%{keyword}%")
 
-        if tags:
-            for tag in tags:
-                conditions.append('(JSON_CONTAINS(ti.tags, %s))')
-                params.append(f'"{tag}"')
+        if playerCounts:
+            conditions.append("ti.player = %s")
+            params.extend(playerCounts)
+
+        if modes:
+            mode_conditions = []
+            for mode_set in modes:
+                # 拆分每个模式字符串
+                tags = mode_set.split(',')
+                for tag in tags:
+                    mode_conditions.append("JSON_CONTAINS(ti.tags, %s, '$')")
+                    params.append(json.dumps([tag]))
+            conditions.append(" AND ".join(mode_conditions))
+
+        if dateStart:
+            conditions.append("ti.update_time >= %s")
+            params.append(dateStart)
+
+        if dateEnd:
+            conditions.append("ti.update_time <= %s")
+            params.append(dateEnd)    
+
+        if difficulties:
+            difficulty_conditions = []
+            for difficulty_set in difficulties:
+                difficulty_values = difficulty_set.split(',')
+                difficulty_conditions.append("(" + " OR ".join(["(ti.level = %s)"] * len(difficulty_values)) + ")")
+                params.extend(difficulty for difficulty in difficulty_values)
+            conditions.append(" AND ".join(difficulty_conditions))
 
         if conditions:
             base_query += " AND " + " AND ".join(conditions)
             count_query += " AND " + " AND ".join(conditions)
 
+        print(base_query)
+        print(params)
         base_query += " LIMIT %s OFFSET %s"
         params.extend([tactics_per_page, offset])
 
@@ -58,7 +89,7 @@ async def get_searched_tactics(
 		# 抓取(所有or有條件)景點資料，12筆為一頁
         cursor.execute(base_query, params)
         tactics = cursor.fetchall()
-        
+
         # 在所有顯示過的筆數還沒到總筆數時，下一頁=當前頁數+1，否則為None
         next_page = page + 1 if offset + tactics_per_page < total_items else None
 
@@ -71,6 +102,7 @@ async def get_searched_tactics(
                         "name": tactic["name"],
                         "player": tactic["player"],
                         "tags": tactic["tags"],
+                        "level": tactic["level"],
                         "username": tactic["username"],
                         "member_id": tactic["member_id"],
                         "update_time":tactic["update_time"].isoformat(),
@@ -79,10 +111,7 @@ async def get_searched_tactics(
                 ]
             }
         else:
-            result = {
-                "nextPage": next_page,
-                "data": []
-            }
+            result = {"nodata":True}
 
         return result, 200
 
