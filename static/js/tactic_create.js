@@ -4,6 +4,13 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "/";
         return;
     }
+    
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('positions_step_')) {
+            localStorage.removeItem(key);
+        }
+    }
 
     document.querySelectorAll('.option').forEach(option => {
         option.addEventListener('click', () => {

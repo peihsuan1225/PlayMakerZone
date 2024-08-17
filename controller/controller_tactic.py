@@ -1,3 +1,4 @@
+from fastapi import Query
 from model.model import TacticRequest, TacticContentRequest
 from fastapi.responses import JSONResponse
 from config import get_db_connection
@@ -26,14 +27,14 @@ async def get_searched_tactics(
         base_query = '''
         SELECT ti.*, m.username FROM tactics_info ti
         JOIN member m ON ti.member_id = m.id
-        WHERE ti.status = "公開"
+        WHERE ti.status = "公開" AND ti.finished ="1"
         '''
 
         count_query='''
         SELECT COUNT(*) AS total 
         FROM tactics_info ti
         JOIN member m ON ti.member_id = m.id
-        WHERE ti.status = "公開"
+        WHERE ti.status = "公開" AND ti.finished ="1"
         '''
 
         conditions =[]
@@ -123,7 +124,99 @@ async def get_searched_tactics(
     except Exception as e:
         error_message = str(e)
         return {"error": True, "message": error_message}, 500
+    
 
+async def get_member_tactics(page: int, userName: str = Query(None), userID: int = Query(None)):
+    tactics_per_page = 12
+    offset = page * tactics_per_page
+
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor(aiomysql.DictCursor) as cursor:
+
+            base_query = '''
+            SELECT ti.*, m.username FROM tactics_info ti
+            JOIN member m ON ti.member_id = m.id
+            WHERE
+            '''
+
+            count_query='''
+            SELECT COUNT(*) AS total
+            FROM tactics_info ti
+            JOIN member m ON ti.member_id = m.id
+            WHERE
+            '''
+
+            conditions =[]
+
+            params = []
+
+            # 非本人>用username去撈，顯示ststus=公開 且 finished=1
+            if userName:
+                conditions.append("m.username = %s")
+                params.append(userName)
+                conditions.append("ti.status = '公開'")
+                conditions.append("ti.finished = 1")
+
+            # 本人>用member_id去撈，不用作狀態篩選，全部資料都撈
+            if userID:
+                member_id = userID
+                conditions.append("ti.member_id = %s")
+                params.append(member_id)
+
+            if conditions:
+                base_query += " AND ".join(conditions)
+                count_query += " AND ".join(conditions)
+
+            # print(base_query)
+            # print(params)
+            base_query += " LIMIT %s OFFSET %s"
+            params.extend([tactics_per_page, offset])
+
+            # 計算總筆數，params的最後兩個參數忽略(計算筆數不需要分頁)
+            await cursor.execute(count_query, params[:-2])
+            countResult = await cursor.fetchone()
+            total_items = countResult["total"]
+
+            # 抓取(所有or有條件)景點資料，12筆為一頁
+            await cursor.execute(base_query, params)
+            tactics = await cursor.fetchall()
+            # print(tactics)
+
+            await conn.ensure_closed()
+            # 在所有顯示過的筆數還沒到總筆數時，下一頁=當前頁數+1，否則為None
+            next_page = page + 1 if offset + tactics_per_page < total_items else None
+
+            if tactics:
+                result = {
+                    "nextPage":next_page,
+                    "data":[
+                        {
+                            "id": tactic["id"],
+                            "name": tactic["name"],
+                            "player": tactic["player"],
+                            "tags": tactic["tags"],
+                            "level": tactic["level"],
+                            "username": tactic["username"],
+                            "member_id": tactic["member_id"],
+                            "update_time":tactic["update_time"].isoformat(),
+                            "finished":tactic["finished"],
+                            "status": tactic["status"],
+                        }
+                        for tactic in tactics
+                    ]
+                }
+            else:
+                result = {"nodata":True}
+        
+        return result, 200
+        
+    except Exception as e:
+        return {"error": True, "message": str(e)}, 500
+    finally:
+        conn.close()
+
+        
 def convert_level_to_int(level: str) -> int:
     if level == "新手":
         return 1
@@ -247,10 +340,10 @@ async def save_tactic_content(tacticContent_input: TacticContentRequest):
 
             update_query = '''
             UPDATE tactics_info
-            SET update_time = %s
+            SET update_time = %s ,finished = "1"
             wHERE id = %s
             '''
-            await cursor.execute(update_query, (current_time, tacticContent_input.tactic_id))
+            await cursor.execute(update_query, (current_time ,tacticContent_input.tactic_id))
             await conn.ensure_closed()
 
             return {"ok": True}, 200

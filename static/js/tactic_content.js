@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('positions_step_')) {
+            localStorage.removeItem(key);
+        }
+    }
     fetch("/api/tactic/latest", {
             method: "GET",
             headers: {
@@ -251,7 +257,14 @@ document.addEventListener('DOMContentLoaded', () => {
         Promise.all(promises)
             .then(() => {
                 alert('戰術內容已成功儲存');
-                window.location.href = "/myTactic"
+                window.location.href = "/myTactics"
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key.startsWith('positions_step_')) {
+                        localStorage.removeItem(key);
+                    }
+                }
+                localStorage.removeItem("tactic_id");
             })
             .catch(error => {
                 console.error('One or more steps failed to save:', error);

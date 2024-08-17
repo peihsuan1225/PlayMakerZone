@@ -18,7 +18,20 @@ a{
     opacity: 65%;
 }
 
+.content {
+    padding-top: 84px;
+}
 /* Navigation Bar */
+.navbar_insert {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    z-index: 1000;
+}
+.bg-custom-light {
+    background-color: #ebe8e8 !important;
+}
+
 .navbar-nav img {
     border-radius: 50%;
     width: 40px;

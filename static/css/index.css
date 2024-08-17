@@ -68,3 +68,9 @@
         display: none;
     }
 }
+
+@media (min-width: 1700px) {
+    .container {
+        min-width: 70%;
+    }
+}

@@ -1,0 +1,137 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.profile-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: sticky;
+    top: 130px;
+}
+
+.profile-section img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+.profile-section h3 {
+    margin-bottom: 10px;
+}
+
+.profile-section p {
+    color: #777;
+    margin-bottom: 0;
+}
+
+.tactics-section {
+    margin-top: 20px;
+}
+
+.tactic-card {
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.status-img {
+    width: 30px;
+    margin: auto auto 8px 10px;
+    border-radius: 10px;
+}
+
+.tactic-card img {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.tactic-card h5 {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.tactic-card .creator-id {
+    font-size: 0.9rem;
+    color: #007bff;
+    text-decoration: underline;
+}
+
+.tag {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 2px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+.tag-進攻 {
+    background-color: #007bff;
+}
+
+.tag-防守 {
+    background-color: #28a745;
+}
+
+.tag-半場 {
+    background-color: #ffc107;
+}
+
+.tag-全場 {
+    background-color: #dc3545;
+}
+
+.tag-陣地 {
+    background-color: #17a2b8;
+}
+
+.tag-快攻 {
+    background-color: #6f42c1;
+}
+
+.tag-製作中 {
+    color: #1675db;
+    text-decoration: underline;
+    float: right;
+    margin-left: 10px; 
+    line-height: 0.8em;
+}
+
+.difficulty {
+    display: inline-block;
+    color: gold;
+}
+
+.player-count {
+    color: #333;
+    margin-right: 20px;
+}
+
+.tactic-card .btn-light {
+    font-size: 0.8rem;
+    margin-right: 5px;
+}
+
+@media (min-width: 992px) {
+    .row {
+        display: flex;
+    }
+}
+
+@media (min-width: 1700px) {
+    .container {
+        min-width: 80%;
+    }
+    .tactics-section .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .tactics-section .col-md-6 {
+        flex: 0 0 33.3333%; /* 每個卡片佔三分之一的寬度 */
+        max-width: 33.3333%;
+    }
+}

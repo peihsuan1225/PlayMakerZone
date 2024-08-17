@@ -43,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Token expired or invalid");
+                        return;
                     }
                     return response.json();
                 })
@@ -181,7 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     if (!response.ok) {
                         const errorData = await response.json();
-                        signinErrorMessage.textContent = errorData.message || "無法登入，請稍後再試";
+                        signinErrorMessage.textContent = "無法登入，請稍後再試";
                     }
                     else{
                         const responseData = await response.json();
@@ -219,10 +220,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     if (!response.ok){
                         const errorData = await response.json();
-                        signupErrorMessage.textContent = errorData.message || "無法註冊，請稍後再試";                    
+                        signupErrorMessage.textContent = errorData.message || "無法註冊，請稍後再試";    
+                        signupErrorMessage.style.color = "red";                
                     }
                     else{
-                        signupErrorMessage.textContent = "註冊成功"
+                        signupErrorMessage.textContent = "註冊成功";
+                        signupErrorMessage.style.color = "green";
                     }
                 } catch (error){
                     console.error("Error", error);
