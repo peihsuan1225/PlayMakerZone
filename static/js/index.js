@@ -60,6 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
             const card = document.createElement("div");
             card.className = "card mb-4";
+            card.addEventListener("click", function() {
+                window.location.href = `/tactic/${tactic.id}`;
+            });      
+            card.style.cursor = "pointer";                 
     
             const tumbnail = document.createElement("img");
             tumbnail.className = "card-img-top";

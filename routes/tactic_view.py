@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query, Depends, Request
 from fastapi.responses import JSONResponse, FileResponse
-from controller.controller_tactic import get_searched_tactics, get_member_tactics
+from controller.controller_tactic import get_searched_tactics, get_member_tactics, fetch_tactic_content_from_db
 from typing import List, Optional
 from utils import get_current_user
 
@@ -38,3 +38,12 @@ async def get_peronal_tactics(page: int = Query(0, ge=0), userName: str = Query(
 @router.get("/myTactics", response_class=FileResponse)
 async def get_homepage(request: Request):
     return FileResponse("./static/html/tactic_personal.html", media_type="text/html")
+
+@router.get("/tactic/{tactic_id}", response_class=FileResponse)
+async def get_tactic_content(request: Request, tactic_id: int):
+    return FileResponse("./static/html/tactic_content_view.html", media_type="text/html")
+
+@router.get("/api/tactic/content")
+async def get_tactic_content(tactic_id: int):
+    response_data, status_code = await fetch_tactic_content_from_db(tactic_id)
+    return JSONResponse(content=response_data, status_code=status_code)

@@ -24,7 +24,7 @@ async def create_tactic(tactic_input: TacticRequest):
 
 @router.get("/createTactic/content", response_class=FileResponse)
 async def get_page(request: Request):
-    return FileResponse("./static/html/tactic_content.html", media_type="text/html")
+    return FileResponse("./static/html/tactic_content_edit.html", media_type="text/html")
 
 @router.get("/api/tactic/latest")
 async def get_latest_tacticInfo(user: dict = Depends(get_current_user)):

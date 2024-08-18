@@ -180,9 +180,10 @@ document.addEventListener("DOMContentLoaded", () => {
                         body: JSON.stringify(request)
                     });
 
+                    // console.log(response)
                     if (!response.ok) {
                         const errorData = await response.json();
-                        signinErrorMessage.textContent = "無法登入，請稍後再試";
+                        signinErrorMessage.textContent = errorData.message;
                     }
                     else{
                         const responseData = await response.json();

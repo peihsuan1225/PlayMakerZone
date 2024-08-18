@@ -81,7 +81,7 @@ async def get_searched_tactics(
 
         # print(base_query)
         # print(params)
-        base_query += " LIMIT %s OFFSET %s"
+        base_query += " ORDER BY ti.update_time DESC LIMIT %s OFFSET %s"
         params.extend([tactics_per_page, offset])
 
         # 計算總筆數，params的最後兩個參數忽略(計算筆數不需要分頁)
@@ -170,7 +170,7 @@ async def get_member_tactics(page: int, userName: str = Query(None), userID: int
 
             # print(base_query)
             # print(params)
-            base_query += " LIMIT %s OFFSET %s"
+            base_query += " ORDER BY ti.update_time DESC LIMIT %s OFFSET %s"
             params.extend([tactics_per_page, offset])
 
             # 計算總筆數，params的最後兩個參數忽略(計算筆數不需要分頁)
@@ -351,3 +351,46 @@ async def save_tactic_content(tacticContent_input: TacticContentRequest):
     except Exception as e:
         # print(f"Error:{str(e)}")
         return {"error": True, "message": str(e)}, 500
+
+async def fetch_tactic_content_from_db(tactic_id):
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor(aiomysql.DictCursor) as cursor:
+            query = '''
+            SELECT td.*, ti.* FROM tactic_details td
+            JOIN tactics_info ti ON td.tactic_id = ti.id 
+            WHERE td.tactic_id = %s AND ti.status = "公開" AND ti.finished ="1"
+            '''
+
+            await cursor.execute(query, tactic_id)
+            step_contents = await cursor.fetchall()
+
+            tags = json.loads(step_contents[0]["tags"])
+            player_number = step_contents[0]["player"]
+            tactic_name = step_contents[0]["name"]
+
+            if step_contents:
+                result = {
+                    "tacticName": tactic_name,
+                    "court": tags[0],
+                    "player": player_number,
+                    "data":[
+                        {
+                            "step": step_content["step"],
+                            "player_A": step_content["player_A"],
+                            "player_B": step_content["player_B"],
+                            "ball": step_content["ball"],
+                            "description": step_content["description"],          
+                        }
+                        for step_content in step_contents
+                    ]
+                }
+            else:
+                result = {"nodata":True}
+            
+            return result, 200
+        
+    except Exception as e:
+        return {"error": True, "message": str(e)}, 500
+    finally:
+        conn.close()
