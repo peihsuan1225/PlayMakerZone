@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const parts = pathname.split("/");
     const id = parts[parts.length-1];
 
+    console.log(id);
     fetch("/api/tactic/content?tactic_id="+id, {
             method: "GET",
             headers: {
@@ -13,16 +14,32 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(result => {
         if (result.error) {
             console.error('Error fetching tactic data:', result.message);
+            const tactic_name_dispaly = document.querySelector("#tactic_name"); 
+            tactic_name_dispaly.innerHTML = ''; 
+            const no_tacticContent = document.querySelector("#no_tacticContent"); 
+            no_tacticContent.style.display = "block";
+            
+            const edit_tacticContent = document.querySelector("#edit_tacticContent"); 
+            edit_tacticContent.style.display = "block";
+
+            edit_tacticContent.addEventListener("click", () => {
+                if (localStorage.tactic_id_p) {
+                    localStorage.removeItem("tactic_id_p");
+                }
+                localStorage.setItem("tactic_id_p", id);
+
+                window.location.href = "/createTactic/content";
+            })
         }
         else{
-            data_save_localstorage(result);
+            data_to_localstorage(result);
             setupBoard(result);
             // console.log(data.data);
         }
     })
     .catch(error => console.error('Error fetching tactic data:', error));
 
-    function data_save_localstorage(result) {
+    function data_to_localstorage(result) {
         // 遍歷 result.data 中的每個步驟
         result.data.forEach(stepData => {
             const step = stepData.step;
@@ -49,6 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setupBoard(tactic) {
+        const tactic_steps = document.querySelector("#tactic-steps");
+        tactic_steps.style.display = "flex";
+
         const description = document.querySelector('#description');
         const tacticBoard = document.querySelector('#tactic-board');
         const court = document.querySelector("#court");

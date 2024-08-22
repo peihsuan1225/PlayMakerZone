@@ -34,7 +34,6 @@ async def get_peronal_tactics(page: int = Query(0, ge=0), userName: str = Query(
     response_data, status_code = await get_member_tactics(page=page, userName=userName, userID=userID)
     return JSONResponse(content=response_data, status_code=status_code)
 
-
 @router.get("/myTactics", response_class=FileResponse)
 async def get_homepage(request: Request):
     return FileResponse("./static/html/tactic_personal.html", media_type="text/html")

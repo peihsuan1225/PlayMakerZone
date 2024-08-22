@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // for (let i = localStorage.length - 1; i >= 0; i--) {
+    //     const key = localStorage.key(i);
+    //     if (key.startsWith('positions_step_')) {
+    //         localStorage.removeItem(key);
+    //     }
+    // }
+    // if (localStorage.tactic_id) {
+    //     localStorage.removeItem("tactic_id");
+    // }
+
     function fetchAndDisplayTactics(){
         const searchInput = document.querySelector('input[type="text"]').value;
         const playerCounts = Array.from(document.querySelectorAll('input[name="playerCount"]:checked')).map(el => el.value);

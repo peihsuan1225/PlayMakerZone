@@ -267,28 +267,40 @@ async def create_tactic_info(tactic_input: TacticRequest):
         return {"error": True, "message": str(e)}, 500
 
 
-async def get_latest_tactic(user):
+async def get_tactic(tactic_id=None, user=None):
+    # print(f"Received tactic_id: {tactic_id}")  
+    # print(f"Received user: {user}")  
     try:
         conn = await get_db_connection()
         async with conn.cursor(aiomysql.DictCursor) as cursor:
-            query = '''
-            SELECT * FROM tactics_info
-            WHERE member_id = %s
-            ORDER BY create_time DESC
-            LIMIT 1
-            '''
-            await cursor.execute(query, (user["id"],))
+            if tactic_id:
+                # 根據 tactic_id 查詢戰術內容
+                query = '''
+                SELECT * FROM tactics_info
+                WHERE id = %s
+                '''
+                await cursor.execute(query, (tactic_id,))
+            elif user:
+                # 根據 user 查詢最新戰術內容
+                query = '''
+                SELECT * FROM tactics_info
+                WHERE member_id = %s
+                ORDER BY create_time DESC
+                LIMIT 1
+                '''
+                await cursor.execute(query, (user["id"],))
+            else:
+                return {"error": True, "message": "No valid parameters provided"}, 400
+
             tactic_info = await cursor.fetchone()
             await conn.ensure_closed()
-            # print(tactic_info)
-
+            
             if tactic_info:
                 return {"data": tactic_info, "error": False}, 200
             else:
-                return {"error": True, "message": "No tactic found"}, 404
+                return {"error": True, "message": "Tactic not found"}, 404
         
     except Exception as e:
-        # print(e)
         return {"error": True, "message": str(e)}, 500
     
 
@@ -359,7 +371,7 @@ async def fetch_tactic_content_from_db(tactic_id):
             query = '''
             SELECT td.*, ti.* FROM tactic_details td
             JOIN tactics_info ti ON td.tactic_id = ti.id 
-            WHERE td.tactic_id = %s AND ti.status = "公開" AND ti.finished ="1"
+            WHERE td.tactic_id = %s
             '''
 
             await cursor.execute(query, tactic_id)
@@ -368,10 +380,16 @@ async def fetch_tactic_content_from_db(tactic_id):
             tags = json.loads(step_contents[0]["tags"])
             player_number = step_contents[0]["player"]
             tactic_name = step_contents[0]["name"]
+            member_id = step_contents[0]["member_id"]
+            status = step_contents[0]["status"]
+
+            # print(step_contents)
 
             if step_contents:
                 result = {
                     "tacticName": tactic_name,
+                    "memberID": member_id,
+                    "status": status,
                     "court": tags[0],
                     "player": player_number,
                     "data":[

@@ -5,13 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
     
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('positions_step_')) {
-            localStorage.removeItem(key);
-        }
-    }
-
     document.querySelectorAll('.option').forEach(option => {
         option.addEventListener('click', () => {
             const optionContainer = option.parentElement;
@@ -110,9 +103,10 @@ document.addEventListener("DOMContentLoaded", () => {
             return response.json();
         })
         .then(data => {
+            localStorage.removeItem('tactic_id_p');
             // 成功處理，導向下一頁或其他操作
             alert('戰術已成功建立');
-            window.location.href = '/createTactic/content'; // 或者是其他適當的頁面
+            window.location.href = '/createTactic/content'; 
         })
         .catch(error => {
             console.error('錯誤:', error);

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import FileResponse, JSONResponse
 from model.model import TacticRequest, TacticContentRequest
-from controller.controller_tactic import create_tactic_info, get_latest_tactic, save_tactic_content
+from controller.controller_tactic import create_tactic_info, get_tactic, save_tactic_content
 from utils import get_current_user
 from datetime import datetime
 import json
@@ -27,8 +27,14 @@ async def get_page(request: Request):
     return FileResponse("./static/html/tactic_content_edit.html", media_type="text/html")
 
 @router.get("/api/tactic/latest")
-async def get_latest_tacticInfo(user: dict = Depends(get_current_user)):
-    response_data, status_code = await get_latest_tactic(user)
+async def get_tactic_user(user: dict = Depends(get_current_user)):
+    response_data, status_code = await get_tactic(user=user)
+    response_data = json.loads(json.dumps(response_data, default=datetime_to_string))
+    return JSONResponse(content=response_data, status_code=status_code)
+
+@router.get("/api/tactic/info")
+async def get_tactic_tacticID(tactic_id: int):
+    response_data, status_code = await get_tactic(tactic_id=tactic_id)
     response_data = json.loads(json.dumps(response_data, default=datetime_to_string))
     return JSONResponse(content=response_data, status_code=status_code)
 

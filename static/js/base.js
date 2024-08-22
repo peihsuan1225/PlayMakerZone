@@ -1,4 +1,22 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const keysToRemove = [];
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('positions_step_')) {
+            keysToRemove.push(key);
+        }
+    }
+    
+    // 刪除收集到的所有鍵
+    keysToRemove.forEach((key) => {
+        localStorage.removeItem(key);
+    });
+    
+    if (localStorage.tactic_id) {
+        localStorage.removeItem("tactic_id");
+    }
+
     // 插入navbar,dialog,footer的html
     fetch("/static/html/base.html")
     .then(response => {

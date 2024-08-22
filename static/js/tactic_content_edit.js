@@ -4,35 +4,57 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = "/";
         return;
     }
-
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key.startsWith('positions_step_')) {
-            localStorage.removeItem(key);
+    
+    async function fetchTactic() {
+        let fetchedInfo = false;
+        const tacticId = localStorage.getItem("tactic_id_p");
+    
+        try {
+            if (tacticId) {
+                const response = await fetch("/api/tactic/info?tactic_id=" + tacticId, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+    
+                const data = await response.json();
+    
+                if (data.error) {
+                    console.error('Error fetching tactic data:', data.message);
+                } else {
+                    fetchedInfo = true;
+                    setupBoard(data.data);
+                }
+            }
+    
+            if (!fetchedInfo) {
+                const response = await fetch("/api/tactic/latest", {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+    
+                const data = await response.json();
+    
+                if (data.error) {
+                    console.error('Error fetching tactic data:', data.message);
+                } else {
+                    setupBoard(data.data);
+                    localStorage.setItem("tactic_id", data.data.id);
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching tactic data:', error);
         }
     }
-    fetch("/api/tactic/latest", {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            console.error('Error fetching tactic data:', data.message);
-            window.location.href = "/createTactic";
-            return;
-        }
-        else{
-            setupBoard(data.data);
-            // console.log(data.data);
-            localStorage.setItem("tactic_id", data.data.id);
-        }
-    })
-    .catch(error => console.error('Error fetching tactic data:', error));
+
+    fetchTactic();
 
     function setupBoard(tactic) {
+        const edit_element = document.querySelector("#tactic-steps");
+        edit_element.style.display = "flex";
         const description = document.querySelector('#description');
         const tacticBoard = document.querySelector('#tactic-board');
         const court = document.querySelector("#court");
@@ -258,13 +280,18 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(() => {
                 alert('戰術內容已成功儲存');
                 window.location.href = "/myTactics"
-                for (let i = 0; i < localStorage.length; i++) {
+                for (let i = localStorage.length - 1; i >= 0; i--) {
                     const key = localStorage.key(i);
                     if (key.startsWith('positions_step_')) {
                         localStorage.removeItem(key);
                     }
                 }
-                localStorage.removeItem("tactic_id");
+                if (localStorage.tactic_id) {
+                    localStorage.removeItem("tactic_id");
+                }
+                if (localStorage.tactic_id_p) {
+                    localStorage.removeItem("tactic_id_p");
+                }
             })
             .catch(error => {
                 console.error('One or more steps failed to save:', error);

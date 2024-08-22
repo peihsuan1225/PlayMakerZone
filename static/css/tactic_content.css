@@ -33,7 +33,7 @@
 #tactic-steps {
     width: 80%;
     margin: 10px auto;
-    display: flex;
+    display: none;
     align-items: center;
 }
 
@@ -80,6 +80,16 @@
     height: 100%;
     background-size: contain;
     background-repeat: no-repeat;
+}
+
+#no_tacticContent {
+    display: none;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+#edit_tacticContent{
+    display: none;
 }
 
 textarea {
