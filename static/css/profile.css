@@ -1,0 +1,59 @@
+body{
+    margin-top:20px;
+}
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 0 solid transparent;
+    border-radius: .25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 6px 0 rgb(218 218 253 / 65%), 0 2px 6px 0 rgb(206 206 238 / 54%);
+}
+.me-2 {
+    margin-right: .5rem!important;
+}
+
+/* Avatar selection */
+.avatar-option {
+    position: relative;
+    cursor: pointer;
+}
+
+.avatar-option.selected::after {
+    content: '\f00c'; /* FontAwesome checkmark */
+    font-family: FontAwesome;
+    color: green; /* 勾勾顏色 */
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 24px;
+    background-color: white; /* 勾勾背景色 */
+    border-radius: 50%;
+    padding: 2px;
+}
+  
+/* Profile edit pencil icon */
+.edit-icon {
+color: orange; /* 橘黃色 */
+cursor: pointer;
+}
+
+/* Save and Cancel icons */
+.save-icon {
+color: green; /* 綠色 */
+margin-right: 10px; /* 增加儲存和取消圖標的間距 */
+cursor: pointer;
+}
+
+.cancel-icon {
+color: red; /* 紅色 */
+cursor: pointer;
+}
+  
+
+

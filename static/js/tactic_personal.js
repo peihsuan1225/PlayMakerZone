@@ -195,11 +195,58 @@ document.addEventListener("DOMContentLoaded", () => {
         userNameDisplay.id = "userName";
         userNameDisplay.innerText = user.username;
 
+        const hr = document.createElement("hr");
+        hr.className = "my-4";
+
+        // 1. 創建 li 元素並設置類別
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center flex-wrap';
+
+        // 2. 創建 h6 元素並設置類別
+        const h6 = document.createElement('h6');
+        h6.className = 'mb-0';
+
+        // 3. 創建 SVG 元素
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        svg.setAttribute('width', '24');
+        svg.setAttribute('height', '24');
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '2');
+        svg.setAttribute('stroke-linecap', 'round');
+        svg.setAttribute('stroke-linejoin', 'round');
+        svg.classList.add('feather', 'feather-mail', 'me-2', 'icon-inline');
+
+        // 創建 path 元素並將其添加到 SVG 中
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', 'M4 4h16c1.11 0 2 .89 2 2v12c0 1.11-.89 2-2 2H4c-1.11 0-2-.89-2-2V6c0-1.11.89-2 2-2z');
+        svg.appendChild(path);
+
+        // 創建 polyline 元素並將其添加到 SVG 中
+        const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+        polyline.setAttribute('points', '22,6 12,13 2,6');
+        svg.appendChild(polyline);
+
+        // 4. 創建 span 元素並設置類別和文本
+        const span = document.createElement('span');
+        span.className = 'text-secondary';
+        span.textContent = 'john@example.com';
+
+        // 5. 組裝元素
+        h6.appendChild(svg); // 將 SVG 添加到 h6 中
+        h6.appendChild(document.createTextNode('Email')); // 添加文本節點
+        li.appendChild(h6); // 將 h6 添加到 li 中
+        li.appendChild(span); // 將 span 添加到 li 中
+     
+        
         const aboutMeDisplay = document.createElement("p");
         aboutMeDisplay.innerText = user.intro || "關於我";
-
+        
         profile.appendChild(avatarDisplay);
         profile.appendChild(userNameDisplay);
+        profile.appendChild(hr);
+        profile.appendChild(li);
         profile.appendChild(aboutMeDisplay);
     }
 })

@@ -1,4 +1,3 @@
-# import mysql.connector.pooling
 from dotenv import load_dotenv
 import os
 import aiomysql
