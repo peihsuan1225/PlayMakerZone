@@ -1,34 +1,91 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        window.location.href = "/";
+        return;
+    }
+
+    const mainBody = document.querySelector("main-body");
+    const avatar = document.querySelector("#user-avatar");
+    const username_avatar = document.querySelector("#user-name");
+    const fullname = document.querySelector("#name-text");
+    const email = document.querySelector("#email-text");
+    const username_profile = document.querySelector("#username-text");
+    const aboutMe = document.querySelector("#about-text");
+
+    const updateProfile = (token) => {
+        if (token) {    
+            fetch("/api/user/auth", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Token expired or invalid");
+                    return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.data) {
+                    avatar.src = data.data.avatar || '/static/images/default_avatar.jpg';
+                    username_avatar.textContent = data.data.username;
+                    username_profile.textContent = data.data.username;
+                    fullname.textContent = data.data.fullname;
+                    email.textContent = data.data.email;
+                    aboutMe.textContent = data.data.about_me;
+                } else {
+                    mainBody.innerHTML = "";
+                    mainBody.textContent = "獲取個人資料出錯"; 
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                mainBody.innerHTML = "";
+                mainBody.textContent = "獲取個人資料出錯"; 
+            });
+        }
+        else{
+            window.location.href="/"
+        }
+    };
     
+    updateProfile(token);
+
+
+
     const updateAvatarBtn = document.querySelector('#update-avatar-btn');
     const avatarOptions = document.querySelector('#avatar-options');
     const saveAvatarBtn = document.querySelector('#save-avatar-btn');
-  
+    const cancelAvatarBtn = document.querySelector('#cancel-avatar-btn');
+
     if (updateAvatarBtn && avatarOptions && saveAvatarBtn) {
         updateAvatarBtn.addEventListener('click', function() {
             this.classList.add('d-none');  // 隱藏 Update Avatar 按鈕
             avatarOptions.classList.remove('d-none');  // 顯示 Avatar 選項
             saveAvatarBtn.classList.remove('d-none');  // 顯示 Save 按鈕
+            cancelAvatarBtn.classList.remove('d-none');
         });
     }
   
-    // 點擊預設的 Avatar 選擇
-    document.querySelectorAll('.avatar-option').forEach(avatar => {
-        avatar.addEventListener('click', function() {
-            console.log('Avatar clicked');  // 調試用
+    // 選取所有的 selectable-circle 元素
+    const circles = document.querySelectorAll('.selectable-circle');
 
-            // 移除其他選擇指示
-            document.querySelectorAll('.avatar-select-indicator').forEach(indicator => {
-                indicator.classList.add('d-none');
+    // 為每個 circle 元素添加點擊事件監聽器
+    circles.forEach(function(circle) {
+        circle.addEventListener('click', function() {
+            // 移除所有圓形的 selected class
+            circles.forEach(function(c) {
+                c.classList.remove('selected');
             });
 
-            // 標記選擇的 Avatar
-            const wrapper = this.closest('.avatar-option-wrapper');
-            if (wrapper) {
-                wrapper.querySelector('.avatar-select-indicator').classList.remove('d-none');
-            }
+            // 為當前被點擊的圓形添加 selected class
+            circle.classList.add('selected');
         });
     });
+
   
     if (saveAvatarBtn) {
         saveAvatarBtn.addEventListener('click', function() {
@@ -37,7 +94,15 @@ document.addEventListener('DOMContentLoaded', () => {
             this.classList.add('d-none');
         });
     }
-  
+    
+    if (cancelAvatarBtn) {
+        cancelAvatarBtn.addEventListener('click', function() {
+            avatarOptions.classList.add('d-none');
+            updateAvatarBtn.classList.remove('d-none');
+            this.classList.add('d-none');
+        });
+    }
+
     // 點擊編輯圖標邏輯
     document.querySelectorAll('.edit-icon').forEach(icon => {
         icon.addEventListener('click', function() {

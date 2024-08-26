@@ -24,18 +24,75 @@ body{
     cursor: pointer;
 }
 
-.avatar-option.selected::after {
-    content: '\f00c'; /* FontAwesome checkmark */
-    font-family: FontAwesome;
-    color: green; /* 勾勾顏色 */
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    font-size: 24px;
-    background-color: white; /* 勾勾背景色 */
+.selectable-circle {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    background-size: cover;
+    background-position: center;
     border-radius: 50%;
-    padding: 2px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 10px;
 }
+
+#avatar6 {
+    background-image: url("/static/images/default_avatar.jpg");
+}
+
+#avatar23 {
+    background-image: url("/static/images/default_avatar23.png");
+}
+
+#avatar99 {
+    background-image: url("/static/images/default_avatar99.jpg");
+}
+
+#avatar2 {
+    background-image: url("/static/images/default_avatar2.png");
+}
+
+#avatar50 {
+    background-image: url("/static/images/default_avatar50.png");
+}
+
+#avatar27 {
+    background-image: url("/static/images/default_avatar27.png");
+}
+
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.checkmark {
+    color: white;
+    font-size: 2em;
+    display: none;
+}
+
+.selectable-circle:hover .overlay,
+.selectable-circle.selected .overlay {
+    opacity: 1;
+}
+
+
+.selectable-circle.selected .checkmark {
+    display: block;
+}
+
   
 /* Profile edit pencil icon */
 .edit-icon {
