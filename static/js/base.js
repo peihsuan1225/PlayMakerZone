@@ -227,7 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 };
                 // formData.append('avatar', imageInput.files[0]);
                 
-                console.log(request);
+                // console.log(request);
                 try {
                     const response = await fetch("/api/user",{
                         method: "POST",

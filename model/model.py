@@ -1,4 +1,4 @@
-from fastapi import UploadFile
+from fastapi import UploadFile, File, Form
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 
@@ -26,13 +26,5 @@ class TacticContentRequest(BaseModel):
     player_B: List[Dict]
     ball: List[Dict]
     description: Optional[str] = None
-
-class UserUpdate(BaseModel):
-    username: Optional[str]
-    email: Optional[str]
-    password: Optional[str]
-    avatar: Optional[UploadFile]
-    about_me: Optional[str]
-    fullname: Optional[str]
 
 
