@@ -137,24 +137,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // functions
             const  popUpFun = () => {
-                signinBlock.classList.add("display");
+                signinBlock.classList.add("d-flex");
                 content.classList.add("faded");        
             };
 
             const closeFun = () =>{
-                signinBlock.classList.remove("display");
-                signupBlock.classList.remove("display");
+                signinBlock.classList.remove("d-flex");
+                signupBlock.classList.remove("d-flex");
                 content.classList.remove("faded");   
             };
 
             const switchFun = () =>{
-                if (signinBlock.classList.contains("display")){
-                    signinBlock.classList.remove("display");
-                    signupBlock.classList.add("display");
+                if (signinBlock.classList.contains("d-flex")){
+                    signinBlock.classList.remove("d-flex");
+                    signupBlock.classList.add("d-flex");
                 }
                 else{
-                    signinBlock.classList.add("display");
-                    signupBlock.classList.remove("display");
+                    signinBlock.classList.add("d-flex");
+                    signupBlock.classList.remove("d-flex");
                 }
             };
 

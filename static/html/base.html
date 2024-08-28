@@ -1,3 +1,6 @@
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
 <!-- Navigation Bar -->
 <nav class="navbar navbar-expand-sm navbar-light bg-custom-light">
   <a class="navbar-brand">PlayMakerZone</a>
@@ -40,29 +43,35 @@
   <!-- dialog section -->
   <div class="dialog">
     <!-- 登入會員 -->
-    <div class="dialog__block" id="sign_in">
-      <div class="dialog__bar"></div>
-      <div class="dialog__text--title">登入會員帳號</div>
-      <div class="dialog__icon--close"></div>
-      <div><input class="dialog__input" id="signin_email_input" placeholder="輸入電子信箱" /></div>
-      <div><input type="password" class="dialog__input" id="signin_password_input" placeholder="輸入密碼" /></div>
-      <button class="dialog__btn" id="sign_in_btn">登入帳戶</button>
-      <div class="dialog__text--error" id="signin_error_message"></div>
-      <div class="dialog__text--switch">還沒有帳戶?點此註冊</div>
+    <div class="dialog__block align-items-center" id="sign_in">
+      <div ><img src="/static/images/login.jpg" style="width: 230px; margin-left: 15px;"></div>
+      <!-- <div class="dialog__bar"></div> -->
+      <div> 
+        <div class="dialog__text--title">登入會員帳號</div>
+        <div class="dialog__icon--close"></div>
+        <div><input class="dialog__input" id="signin_email_input" placeholder="輸入電子信箱" /></div>
+        <div><input type="password" class="dialog__input" id="signin_password_input" placeholder="輸入密碼" /></div>
+        <button class="dialog__btn" id="sign_in_btn">登入帳戶</button>
+        <div class="dialog__text--error" id="signin_error_message"></div>
+        <div class="dialog__text--switch">還沒有帳戶?點此註冊</div>
+      </div>
     </div>
     <!-- 註冊會員 -->
-    <div class="dialog__block" id="sign_up">
-      <div class="dialog__bar"></div>
-      <div class="dialog__text--title">註冊會員帳號</div>
-      <div class="dialog__icon--close"></div>
-      <div><input class="dialog__input" id="signup_name_input" placeholder="輸入使用者名稱" /></div>
-      <div><input class="dialog__input" id="signup_email_input" placeholder="輸入電子信箱" /></div>
-      <div><input type="password" class="dialog__input" id="signup_password_input" placeholder="輸入密碼" /></div>
-      <!-- <label class="dialog__label">上傳頭像(選填)</label>
-      <input type="file" class="dialog__file-input"> -->
-      <button class="dialog__btn" id="sign_up_btn">註冊新帳戶</button>
-      <div class="dialog__text--error" id="signup_error_message"></div>
-      <div class="dialog__text--switch">已經有帳戶了?點此登入</div>
+    <div class="dialog__block align-items-center" id="sign_up">
+      <div><img src="/static/images/login.jpg" style="width: 230px; margin-left: 15px;"></div>
+      <!-- <div class="dialog__bar"></div> -->
+      <div>
+        <div class="dialog__text--title">註冊會員帳號</div>
+        <div class="dialog__icon--close"></div>
+        <div><input class="dialog__input" id="signup_name_input" placeholder="輸入使用者名稱" /></div>
+        <div><input class="dialog__input" id="signup_email_input" placeholder="輸入電子信箱" /></div>
+        <div><input type="password" class="dialog__input" id="signup_password_input" placeholder="輸入密碼" /></div>
+        <!-- <label class="dialog__label">上傳頭像(選填)</label>
+        <input type="file" class="dialog__file-input"> -->
+        <button class="dialog__btn" id="sign_up_btn">註冊新帳戶</button>
+        <div class="dialog__text--error" id="signup_error_message"></div>
+        <div class="dialog__text--switch">已經有帳戶了?點此登入</div>
+      </div>
     </div>
   </div>
   
