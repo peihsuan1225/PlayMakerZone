@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
             col.className = "col-md-4";
     
             const card = document.createElement("div");
-            card.className = "card mb-4";
+            card.className = "card mb-4 shadow";
             card.addEventListener("click", function() {
                 window.location.href = `/tactic/${tactic.id}`;
             });      

@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
     saveButton.addEventListener('click', () => {
         recordPositions(); // 记录位置
 
-        const tacticId = localStorage.getItem('tactic_id');
+        const tacticId = localStorage.getItem('tactic_id')||localStorage.getItem('tactic_id_p');
         const totalSteps = parseInt(document.querySelector('#total-steps').innerText);
         const promises = []; // 用于存储所有的保存请求的 Promise
     
@@ -323,6 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(() => {
                 alert('戰術內容已成功儲存');
                 window.location.href = "/myTactics"
+
                 for (let i = localStorage.length - 1; i >= 0; i--) {
                     const key = localStorage.key(i);
                     if (key.startsWith('positions_step_')) {

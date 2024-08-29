@@ -254,11 +254,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     userUpdateData.append("email", email_input.value.trim());
                   }
                   
-                  if (new_password_input.value.trim() && new_password_input.value === confirm_password_input.value) {
-                    userUpdateData.append("current_password", current_password_input.value.trim());
-                    userUpdateData.append("new_password", new_password_input.value.trim());
-                  }
-                  
                   if (about_input.value.trim()) {
                     userUpdateData.append("about_me", about_input.value.trim());
                   }

@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
             col.className = "col-md-6";
     
             const card = document.createElement("div");
-            card.className = "card tactic-card mb-4";
+            card.className = "card tactic-card mb-4 shadow-lg";
             card.addEventListener("click", function() {
                 window.location.href = `/tactic/${tactic.id}`;
             });

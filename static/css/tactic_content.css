@@ -79,6 +79,7 @@
     width: 100%;
     border: #d19546c2 solid;
     user-select: none;
+    box-shadow: 0px 4px 20px 0px #a79e91;
 }
 
 #no_tacticContent {
