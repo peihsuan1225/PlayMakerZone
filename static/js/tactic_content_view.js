@@ -71,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const description = document.querySelector('#description');
         const tacticBoard = document.querySelector('#tactic-board');
-        const court = document.querySelector("#court");
         const tactic_name_dispaly = document.querySelector("#tactic_name") 
         const player_number = tactic.player
     
@@ -80,30 +79,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tactic_name_dispaly.innerText = tactic.tacticName;
 
-        court.innerHTML = '';
+        tacticBoard.innerHTML = '';
 
+        const court = document.createElement("img")
         const backgroundImage = tactic.court === '全場' ? 'fullcourt.png' : 'halfcourt.png';
-        court.style.backgroundImage = `url(/static/images/${backgroundImage})`;
+        court.src = `/static/images/${backgroundImage}`;
+        court.id = "court";
+        tacticBoard.appendChild(court);
 
         for (let i = 1; i <= player_number; i++) {
             const playerA = document.createElement('div');
             playerA.id = `A${i}`;
             playerA.className = 'player draggable';
             playerA.textContent = i;
-            court.appendChild(playerA); 
+            tacticBoard.appendChild(playerA); 
         }
         for (let i = 1; i <= player_number; i++) {
             const playerB = document.createElement('div');
             playerB.id = `B${i}`;
             playerB.className = 'player draggable';
             playerB.textContent = i;
-            court.appendChild(playerB);
+            tacticBoard.appendChild(playerB);
         }
         
         const ball = document.createElement('div');
         ball.id = `ball`;
         ball.className = 'draggable';
-        court.appendChild(ball);
+        tacticBoard.appendChild(ball);
 
         interact('.draggable').draggable(false);
         loadPositions();
@@ -123,9 +125,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const { x, y } = savedPositions[id];
             const element = document.getElementById(id);
             if (element) {
-                element.style.transform = `translate(${x}px, ${y}px)`;
-                element.setAttribute('data-x', x);
-                element.setAttribute('data-y', y);
+                // 直接使用百分比设置元素的位置
+                element.style.left = `${x}%`;
+                element.style.top = `${y}%`;
+
             }
         });
     }

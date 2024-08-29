@@ -7,7 +7,7 @@
 }
 
 #tactic_name{
-    padding-top: 30px;
+    /* padding-top: 30px; */
     margin: 10px 0 20px 100px;
 }
 
@@ -70,16 +70,15 @@
 }
 
 #tactic-board {
-    width: 80%;
-    height: 800px;
+    width: 80vw;
     margin: 0 auto;
+    position: relative;
 }
 
 #court {
     width: 100%;
-    height: 100%;
-    background-size: contain;
-    background-repeat: no-repeat;
+    border: #d19546c2 solid;
+    user-select: none;
 }
 
 #no_tacticContent {
@@ -91,12 +90,12 @@
 #edit_tacticContent{
     display: none;
 }
-
+/* 
 textarea {
     width: 80%;
     margin: 10px auto;
     height: 80px;
-}
+} */
 
 
 .player {
@@ -105,11 +104,11 @@ textarea {
     border-radius: 50%;
     text-align: center;
     line-height: 30px;
-    margin: 1rem 0 0 1rem;
     color: white;
-    touch-action: none;
+    /* touch-action: none; */
     user-select: none;
-    transform: translate(0px, 0px);
+    position: absolute;
+    /* z-index: 999; */
 }
 
 #A1, #A2, #A3, #A4, #A5{
@@ -126,9 +125,25 @@ textarea {
     border-radius: 50%;
     background-image: url(/static/images/ball.png);
     background-size: cover;
-    margin: 1rem 0 0 1rem;
     border: 1px solid black;
+    position: absolute;
+    z-index: 1000;
 }
+
+
+#A1 { top: 10%; left: 1%; }
+#A2 { top: 20%; left: 1%; }
+#A3 { top: 30%; left: 1%; }
+#A4 { top: 40%; left: 1%; }
+#A5 { top: 50%; left: 1%; }
+
+#B1 { top: 10%; left: 95%; }
+#B2 { top: 20%; left: 95%; }
+#B3 { top: 30%; left: 95%; }
+#B4 { top: 40%; left: 95%; }
+#B5 { top: 50%; left: 95%; }
+
+#ball { top: 50%; left: 50%; }
 
 
 @media (min-width: 1000px) and (max-width: 1920px){

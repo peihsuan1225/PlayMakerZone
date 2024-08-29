@@ -57,37 +57,41 @@ document.addEventListener('DOMContentLoaded', () => {
         edit_element.style.display = "flex";
         const description = document.querySelector('#description');
         const tacticBoard = document.querySelector('#tactic-board');
-        const court = document.querySelector("#court");
         const tagsArray = JSON.parse(tactic.tags);
         const player_number = tactic.player
     
         // console.log(tagsArray);
         // console.dir(tagsArray[0]);
 
-        court.innerHTML = '';
-
+        tacticBoard.innerHTML = '';
+        
+        const court = document.createElement("img")
         const backgroundImage = tagsArray[0] === '全場' ? 'fullcourt.png' : 'halfcourt.png';
-        court.style.backgroundImage = `url(/static/images/${backgroundImage})`;
+        court.src = `/static/images/${backgroundImage}`;
+        court.id = "court";
+        tacticBoard.appendChild(court);
+
 
         for (let i = 1; i <= player_number; i++) {
             const playerA = document.createElement('div');
             playerA.id = `A${i}`;
             playerA.className = 'player draggable';
             playerA.textContent = i;
-            court.appendChild(playerA); 
+            tacticBoard.appendChild(playerA); 
         }
         for (let i = 1; i <= player_number; i++) {
             const playerB = document.createElement('div');
             playerB.id = `B${i}`;
             playerB.className = 'player draggable';
             playerB.textContent = i;
-            court.appendChild(playerB);
+            tacticBoard.appendChild(playerB);
         }
         
         const ball = document.createElement('div');
         ball.id = `ball`;
         ball.className = 'draggable';
-        court.appendChild(ball);
+        tacticBoard.appendChild(ball);
+        
     }
 
     // 處理拖曳效果
@@ -97,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
     interact('.draggable')
     .draggable({
         // enable inertial throwing
-        inertia: true,
+        inertia: false,
         // keep the element within the area of its parent
         modifiers: [
         interact.modifiers.restrictRect({
@@ -110,7 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         listeners: {
         // call this function on every dragmove event
-        move: dragMoveListener,
+        start: dragStartListener, // 监听拖拽开始事件
+        move: dragMoveListener,    // 监听拖拽移动事件
+        // move: dragMoveListener,
 
         // call this function on every dragend event
         end (event) {
@@ -120,32 +126,67 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function dragMoveListener (event) {
-        var target = event.target;
-        // keep the dragged position in the data-x/data-y attributes
-        var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-        var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+    let offsetX = 0; // 鼠标点击点与元素左边界的水平偏移
+    let offsetY = 0; // 鼠标点击点与元素上边界的垂直偏移
 
-        // translate the element
-        target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+    function dragStartListener(event) {
+        const target = event.target;
 
-        // update the position attributes
-        target.setAttribute('data-x', x);
-        target.setAttribute('data-y', y);
+        // 获取鼠标点击点与元素左上角的偏移
+        const targetRect = target.getBoundingClientRect();
+        offsetX = event.clientX - targetRect.left;
+        offsetY = event.clientY - targetRect.top;
     }
 
+    function dragMoveListener(event) {
+        const target = event.target;
+
+        // 计算相对父容器的位置
+        const parentRect = target.parentElement.getBoundingClientRect();
+
+        // 使用偏移计算新的位置
+        const x = ((event.clientX - parentRect.left - offsetX) / parentRect.width) * 100;
+        const y = ((event.clientY - parentRect.top - offsetY) / parentRect.height) * 100;
+
+        // 更新元素的left和top样式为百分比值
+        target.style.left = `${x}%`;
+        target.style.top = `${y}%`;
+    }
+
+
+    // function dragMoveListener (event) {
+    //     const target = event.target;
+
+    //     // 计算相对父容器的位置
+    //     const parentRect = target.parentElement.getBoundingClientRect();
+
+    //     const x = (event.clientX - parentRect.left) / parentRect.width * 100;
+    //     const y = (event.clientY - parentRect.top) / parentRect.height * 100;
+
+    //     // 更新元素的 transform 样式
+    //     target.style.left = `${x}%`;
+    //     target.style.top = `${y}%`;
+
+    //     // // 更新位置属性
+    //     // target.setAttribute('data-x', x);
+    //     // target.setAttribute('data-y', y);
+    // }
+
     function updatePosition(element) {
-        // 记录元素的 ID 和位置
+        // 获取元素的 ID 和当前位置百分比
         const id = element.id;
-        const x = parseFloat(element.getAttribute('data-x')) || 0;
-        const y = parseFloat(element.getAttribute('data-y')) || 0;
+        const x = parseFloat(element.style.left) || 0;
+        const y = parseFloat(element.style.top) || 0;
+
 
         // 更新位置对象
         if (!positions[currentStep_number]) {
             positions[currentStep_number] = {};
         }
-        positions[currentStep_number][id] = { x, y };
+        positions[currentStep_number][id] = { x: x, y: y };
     }
+    
+    
 
     function recordPositions() {
         // 记录所有球员和球的位置
@@ -164,17 +205,19 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadPositions() {
         const positionsKey = `positions_step_${currentStep_number}`;
         const savedPositions = JSON.parse(localStorage.getItem(positionsKey)) || {};
-
+    
         Object.keys(savedPositions).forEach(id => {
             const { x, y } = savedPositions[id];
             const element = document.getElementById(id);
             if (element) {
-                element.style.transform = `translate(${x}px, ${y}px)`;
-                element.setAttribute('data-x', x);
-                element.setAttribute('data-y', y);
+                // 直接使用百分比设置元素的位置
+                element.style.left = `${x}%`;
+                element.style.top = `${y}%`;
+
             }
         });
     }
+    
     
     let currentStep_number = parseInt(document.querySelector('#current-step').innerText);
     let totalSteps_number = parseInt(document.querySelector('#total-steps').innerText);
