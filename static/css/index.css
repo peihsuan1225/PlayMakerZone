@@ -50,7 +50,17 @@
     width: 100%;
     padding: 10px;
     font-size: 1rem;
+    background-color: #63788b;
+    border: none;
+    border-radius: 5px;
+    color: #FFFFFF;
 }
+
+.btn-search:hover{
+    background-color: #4d5e6d;
+    color: #FFFFFF;
+}
+
 @media (max-width:768px) {
     #searchBtn1{
         display: none;

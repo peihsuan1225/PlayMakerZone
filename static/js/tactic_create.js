@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    document.querySelector('.btn-primary').addEventListener('click', (event) => {
+    document.querySelector(".btn").addEventListener('click', (event) => {
         // 檢查所有輸入及選項是否都有值
         const tacticName = document.getElementById('tacticName').value.trim();
         const playerCount = document.getElementById('playerCount').value;

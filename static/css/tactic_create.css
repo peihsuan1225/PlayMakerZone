@@ -17,7 +17,7 @@
 .step.completed {
     color: #fff;
     font-weight: bold;
-    background-color: #007bff;
+    background-color: #63788b;
 }
 
 .step.upcoming {
@@ -51,11 +51,11 @@
 }
 
 .option:hover {
-    background-color: #28a745;
+    background-color: #4ac46bcd;
 }
 
 .option.selected {
-    background-color: #28a745;
+    background-color: #4ac46a;
 }
 
 .btn {
@@ -63,4 +63,13 @@
     margin: 20px auto;
     text-align: center;
     width: 200px; /* 控制按鈕寬度，可以根據需要調整 */
+    background-color: #63788b;
+    border: none;
+    border-radius: 5px;
+    color: #FFFFFF;
+}
+
+.btn:hover {
+    background-color: #4d5e6d;
+    color: #FFFFFF;
 }
