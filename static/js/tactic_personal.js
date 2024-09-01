@@ -105,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
             cardBody.className = "card-body";
     
             const cardText0 = document.createElement("div");
+            cardText0.className = "d-flex";
 
             const tacticName = document.createElement("h5");
             tacticName.className = "card-title d-inline";
@@ -118,7 +119,14 @@ document.addEventListener("DOMContentLoaded", () => {
             else if (tactic.status === "私人"){
                 statusEye.src = "/static/images/privateeye.jpg";
             }
-    
+
+            const deleteDIv = document.createElement("div");
+            deleteDIv.className = "text-end";
+            const delete_icon = document.createElement("img");
+            delete_icon.src = "/static/images/delete.png";
+            delete_icon.style = "width:25px"
+            deleteDIv.appendChild(delete_icon);
+
             const cardText1 = document.createElement("p");
             cardText1.className = "card-text";
     
@@ -174,6 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
             cardBody.appendChild(cardText0);
             cardText0.appendChild(tacticName);
             cardText0.appendChild(statusEye);
+            cardText0.appendChild(deleteDIv);
             cardBody.appendChild(cardText1);
             cardBody.appendChild(cardText2);
             cardBody.appendChild(cardText3);

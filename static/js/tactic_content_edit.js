@@ -71,12 +71,29 @@ document.addEventListener('DOMContentLoaded', () => {
         court.id = "court";
         tacticBoard.appendChild(court);
 
+        const positions = {
+            A1: { top: '10%', left: '1%' },
+            A2: { top: '20%', left: '1%' },
+            A3: { top: '30%', left: '1%' },
+            A4: { top: '40%', left: '1%' },
+            A5: { top: '50%', left: '1%' },
+            B1: { top: '10%', left: '95%' },
+            B2: { top: '20%', left: '95%' },
+            B3: { top: '30%', left: '95%' },
+            B4: { top: '40%', left: '95%' },
+            B5: { top: '50%', left: '95%' }
+        };
 
         for (let i = 1; i <= player_number; i++) {
             const playerA = document.createElement('div');
             playerA.id = `A${i}`;
             playerA.className = 'player draggable';
             playerA.textContent = i;
+
+            // 設定位置
+            playerA.style.top = positions[`A${i}`].top;
+            playerA.style.left = positions[`A${i}`].left;
+
             tacticBoard.appendChild(playerA); 
         }
         for (let i = 1; i <= player_number; i++) {
@@ -84,12 +101,18 @@ document.addEventListener('DOMContentLoaded', () => {
             playerB.id = `B${i}`;
             playerB.className = 'player draggable';
             playerB.textContent = i;
+
+            // 設定位置
+            playerB.style.top = positions[`B${i}`].top;
+            playerB.style.left = positions[`B${i}`].left;
+            
             tacticBoard.appendChild(playerB);
         }
         
         const ball = document.createElement('div');
         ball.id = `ball`;
         ball.className = 'draggable';
+        ball.style = "top: 50%; left: 50%;";
         tacticBoard.appendChild(ball);
         
     }

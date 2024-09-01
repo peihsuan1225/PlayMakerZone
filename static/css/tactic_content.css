@@ -8,7 +8,7 @@
 
 #tactic_name{
     /* padding-top: 30px; */
-    margin: 10px 0 20px 100px;
+    margin: 10px 0 0 10vw;
 }
 
 .step {
@@ -70,13 +70,15 @@
 }
 
 #tactic-board {
-    width: 80vw;
-    margin: 0 auto;
+    /* width: 80vw; */
+    /* margin: 0 auto; */
     position: relative;
+    display: inline-block;
 }
 
 #court {
-    width: 100%;
+    max-width: 100%;
+    max-height: calc(100vh - 250px);
     border: #d19546c2 solid;
     user-select: none;
     box-shadow: 0px 4px 20px 0px #a79e91;
@@ -132,7 +134,7 @@ textarea {
 }
 
 
-#A1 { top: 10%; left: 1%; }
+/* #A1 { top: 10%; left: 1%; }
 #A2 { top: 20%; left: 1%; }
 #A3 { top: 30%; left: 1%; }
 #A4 { top: 40%; left: 1%; }
@@ -144,7 +146,7 @@ textarea {
 #B4 { top: 40%; left: 95%; }
 #B5 { top: 50%; left: 95%; }
 
-#ball { top: 50%; left: 50%; }
+#ball { top: 50%; left: 50%; } */
 
 
 @media (min-width: 1000px) and (max-width: 1920px){

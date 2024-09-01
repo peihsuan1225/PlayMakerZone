@@ -9,6 +9,28 @@ document.addEventListener('DOMContentLoaded', () => {
     //     localStorage.removeItem("tactic_id");
     // }
 
+    //$ = jQuery;
+    $(':radio').mousedown(function(e) {
+        let $self = $(this);
+        if ($self.is(':checked')) {
+            let uncheck = function() {
+                setTimeout(function() {
+                    $self.prop('checked', false); 
+                }, 0);
+            };
+            let unbind = function() {
+                $self.unbind('mouseup', up);
+            };
+            let up = function() {
+                uncheck();
+                unbind();
+            };
+            $self.bind('mouseup', up);
+            $self.one('mouseout', unbind);
+        }
+    });    
+  
+
     function fetchAndDisplayTactics(){
         const searchInput = document.querySelector('input[type="text"]').value;
         const playerCounts = Array.from(document.querySelectorAll('input[name="playerCount"]:checked')).map(el => el.value);
