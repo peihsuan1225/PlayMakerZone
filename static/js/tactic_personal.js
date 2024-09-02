@@ -126,6 +126,9 @@ document.addEventListener("DOMContentLoaded", () => {
             delete_icon.src = "/static/images/delete.png";
             delete_icon.style = "width:25px"
             deleteDIv.appendChild(delete_icon);
+            deleteDIv.addEventListener("click", function(event) {
+                deleteTactic(event, tactic.id);
+            });
 
             const cardText1 = document.createElement("p");
             cardText1.className = "card-text";
@@ -205,49 +208,7 @@ document.addEventListener("DOMContentLoaded", () => {
         userNameDisplay.innerText = user.username;
 
         const hr = document.createElement("hr");
-        hr.className = "my-4";
-
-        // // 1. 創建 li 元素並設置類別
-        // const li = document.createElement('li');
-        // li.className = 'd-flex justify-content-between align-items-center flex-wrap';
-
-        // // 2. 創建 h6 元素並設置類別
-        // const h6 = document.createElement('h6');
-        // h6.className = 'mb-0';
-
-        // // 3. 創建 SVG 元素
-        // const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        // svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-        // svg.setAttribute('width', '24');
-        // svg.setAttribute('height', '24');
-        // svg.setAttribute('fill', 'none');
-        // svg.setAttribute('stroke', 'currentColor');
-        // svg.setAttribute('stroke-width', '2');
-        // svg.setAttribute('stroke-linecap', 'round');
-        // svg.setAttribute('stroke-linejoin', 'round');
-        // svg.classList.add('feather', 'feather-mail', 'me-2', 'icon-inline');
-
-        // // 創建 path 元素並將其添加到 SVG 中
-        // const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        // path.setAttribute('d', 'M4 4h16c1.11 0 2 .89 2 2v12c0 1.11-.89 2-2 2H4c-1.11 0-2-.89-2-2V6c0-1.11.89-2 2-2z');
-        // svg.appendChild(path);
-
-        // // 創建 polyline 元素並將其添加到 SVG 中
-        // const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-        // polyline.setAttribute('points', '22,6 12,13 2,6');
-        // svg.appendChild(polyline);
-
-        // // 4. 創建 span 元素並設置類別和文本
-        // const span = document.createElement('span');
-        // span.className = 'text-secondary';
-        // span.textContent = user.email;
-
-        // // 5. 組裝元素
-        // h6.appendChild(svg); // 將 SVG 添加到 h6 中
-        // h6.appendChild(document.createTextNode('Email')); // 添加文本節點
-        // li.appendChild(h6); // 將 h6 添加到 li 中
-        // li.appendChild(span); // 將 span 添加到 li 中
-     
+        hr.className = "my-4";     
         
         const aboutMeTitle = document.createElement("h6");
         aboutMeTitle.innerText = "關於我"
@@ -260,6 +221,40 @@ document.addEventListener("DOMContentLoaded", () => {
         profile.appendChild(hr);
         profile.appendChild(aboutMeTitle);
         profile.appendChild(aboutMeDisplay);
-        // profile.appendChild(li);
+    }
+
+    function deleteTactic(event, id){
+        event.stopPropagation();
+        const userConfirmed = confirm("刪除後不可恢復，請確認是否刪除?");
+        // console.log(id);
+
+        if (userConfirmed) {            
+            fetch(`/api/tactic?tactic_id=${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("戰術刪除成功！");
+                    window.location.reload();
+                } else {
+                    return response.json().then(data => {
+                        if (data.error) {
+                            alert("刪除失敗：" + data.message);
+                        }
+                        else {
+                            alert("刪除失敗：未知錯誤。");
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('刪除失敗:', error);
+                alert("發生錯誤，請稍後再試。");
+            });
+        }
     }
 })

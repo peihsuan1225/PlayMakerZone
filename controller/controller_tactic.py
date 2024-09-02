@@ -383,7 +383,7 @@ async def fetch_tactic_content_from_db(tactic_id):
             member_id = step_contents[0]["member_id"]
             status = step_contents[0]["status"]
 
-            # print(step_contents)
+            # print(step_contents) 
 
             if step_contents:
                 result = {
@@ -412,3 +412,50 @@ async def fetch_tactic_content_from_db(tactic_id):
         return {"error": True, "message": str(e)}, 500
     finally:
         conn.close()
+
+async def delete_tactic(tactic_id, user):
+    conn = await get_db_connection()
+    try:
+        async with conn.cursor(aiomysql.DictCursor) as cursor:
+            query = '''
+            SELECT member_id
+            FROM tactics_info
+            WHERE ID = %s
+            '''
+            await cursor.execute(query, (tactic_id,))
+            creator = await cursor.fetchone()
+
+            if creator and creator["member_id"] == user["id"]:
+                query = '''
+                SELECT finished
+                FROM tactics_info
+                WHERE ID = %s
+                '''
+                await cursor.execute(query, (tactic_id,))
+                finished = await cursor.fetchone()
+
+                if finished and finished["finished"] == 1:
+                    query = '''
+                    DELETE FROM tactic_details
+                    WHERE tactic_id = %s
+                    '''
+                    await cursor.execute(query, (tactic_id,))
+                
+                query = '''
+                DELETE FROM tactics_info
+                WHERE id = %s
+                '''
+                await cursor.execute(query, (tactic_id,))
+
+                result = {"response": f"tactic deleted id = {tactic_id}"}
+                return result, 200
+
+            else:
+                result = {"error": True, "message": "Tactic owner verification failed."}
+                return result, 403
+            
+    except Exception as e:
+        return {"error": True, "message": str(e)}, 500
+    
+    finally:
+        await conn.ensure_closed()

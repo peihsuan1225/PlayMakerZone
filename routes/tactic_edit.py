@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Depends
 from fastapi.responses import FileResponse, JSONResponse
 from model.model import TacticRequest, TacticContentRequest
-from controller.controller_tactic import create_tactic_info, get_tactic, save_tactic_content
+from controller.controller_tactic import create_tactic_info, get_tactic, save_tactic_content, delete_tactic
 from utils import get_current_user
 from datetime import datetime
 import json
@@ -43,6 +43,7 @@ async def create_tactic(tacticContent_input: TacticContentRequest):
     response_data, status_code = await save_tactic_content(tacticContent_input)
     return JSONResponse(content=response_data, status_code=status_code)
 
-# @router.get("/tactic/{id}", include_in_schema=False)
-# async def attraction(request: Request, id: int):
-# 	return FileResponse("./static/tactic.html", media_type="text/html")
+@router.delete("/api/tactic")
+async def delete_tactic_tacticID(tactic_id: int, user: dict = Depends(get_current_user)):
+    response_data, status_code = await delete_tactic(tactic_id, user)
+    return JSONResponse(content=response_data, status_code=status_code)
