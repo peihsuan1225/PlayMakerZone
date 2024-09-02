@@ -1,10 +1,7 @@
-from fastapi import APIRouter, Query, Depends, Request
+from fastapi import APIRouter, Query, Request
 from fastapi.responses import JSONResponse, FileResponse
 from controller.controller_tactic import get_searched_tactics, get_member_tactics, fetch_tactic_content_from_db
 from typing import List, Optional
-from utils import get_current_user
-
-
 
 router = APIRouter()
 

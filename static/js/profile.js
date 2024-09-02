@@ -10,11 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const username_avatar = document.querySelector("#user-name");
     const fullname = document.querySelector("#name-text");
     const email = document.querySelector("#email-text");
-
-    // let fullname_input = document.querySelector("#name-input");
-    // let email_input = document.querySelector("#email-input");
-    // let username_input = document.querySelector("#username-input");
-    // let about_input = document.querySelector("#about-input");
     
     const username_profile = document.querySelector("#username-text");
 
@@ -45,13 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     avatar.src = data.data.avatar || '/static/images/default_avatar.jpg';
                     username_avatar.textContent = data.data.username;
                     username_profile.textContent = data.data.username;
-                    // username_input.value = data.data.username;
                     fullname.textContent = data.data.fullname;
-                    // fullname_input.value = data.data.fullname;
                     email.textContent = data.data.email;
-                    // email_input.value = data.data.email;
                     aboutMe.textContent = data.data.about_me;
-                    // about_input.value = data.data.about_me;
                 } else {
                     mainBody.innerHTML = "";
                     mainBody.textContent = "獲取個人資料出錯"; 
@@ -79,8 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (updateAvatarBtn && avatarOptions && saveAvatarBtn) {
         updateAvatarBtn.addEventListener('click', function() {
-            this.classList.add('d-none');  // 隱藏 Update Avatar 按鈕
-            avatarOptions.classList.remove('d-none');  // 顯示 Avatar 選項
+            this.classList.add('d-none');  
+            avatarOptions.classList.remove('d-none');  
             
             cancelAvatarBtn.classList.remove('d-none');
             circles.forEach(function(c) {
@@ -94,15 +85,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // 為每個 circle 元素添加點擊事件監聽器
     circles.forEach(function(circle) {
         circle.addEventListener('click', function() {
-            // 移除所有圓形的 selected class
+
             circles.forEach(function(c) {
                 c.classList.remove('selected');
             });
 
-            // 為當前被點擊的圓形添加 selected class
+
             circle.classList.add('selected');
 
-            saveAvatarBtn.classList.remove('d-none');  // 顯示 Save 按鈕
+            saveAvatarBtn.classList.remove('d-none');  
 
             const avatarUrl = getComputedStyle(circle).backgroundImage;
             const avatarUrl_clear = avatarUrl.replace(/^url\(["']?/, '').replace(/["']?\)$/, '')
@@ -112,17 +103,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const url = new URL(avatarUrl_clear);
             const pathname = url.pathname;
 
-            // 清除 FormData 的內容
             userUpdateData.delete("avatar_url");
             userUpdateData.delete("default_avatar");
 
-            // 添加新的資料到 FormData
             userUpdateData.append("default_avatar", pathname);
             });
     });
 
     uploadAvatarInput.addEventListener('change', function(event) {
-        saveAvatarBtn.classList.remove('d-none');  // 顯示 Save 按鈕
+        saveAvatarBtn.classList.remove('d-none');  
         circles.forEach(function(c) {
             c.classList.remove('selected');
         });
@@ -131,17 +120,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const reader = new FileReader();
     
             reader.onload = function(e) {
-                // 設定圖片的src為上傳文件的URL
                 avatar.src = e.target.result;
             }
     
             reader.readAsDataURL(file);
 
-            // 清除 FormData 的內容
             userUpdateData.delete("avatar_url");
             userUpdateData.delete("default_avatar");
 
-            // 添加新的檔案到 FormData
             userUpdateData.append("avatar_url", file);  
         }
     });
@@ -158,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
             if (response.ok) {
                 const data = await response.json();
-                // 更新token
+
                 const tokenValue = data.token[0].token;
                 localStorage.removeItem("token");
                 localStorage.setItem("token", tokenValue);
@@ -189,11 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         window.location.reload();
                     }
                 });
-
-
-            // for (var pair of userUpdateData.entries()) {
-            //     console.log(pair[0]+ ': ' + pair[1]); 
-            // }
         });
     }
     
@@ -210,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 點擊編輯icon邏輯
     document.querySelectorAll('.edit-icon').forEach(icon => {
         icon.addEventListener('click', function() {
-            // 編輯icon跟input框的切換
+
             const target = document.querySelector(this.getAttribute('data-target'));
             const input = this.previousElementSibling;
             const span = input.previousElementSibling;
@@ -266,32 +247,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateUserProfile(userUpdateData)
                 .then(response => {
                     if (response.error) {
-                        // // console.log(response);
-                        // console.log("清空前");
-
-                        // // 遍歷對象的屬性
-                        // for (const pair of userUpdateData.entries()) {
-                        //     console.log(pair[0]+ ': ' + pair[1]); 
-                        // }
-
-                        // 清空對象
+                        
                         userUpdateData = new FormData();
-
-                        // console.log("清空後");
-
-                        // // 確認對象已經被清空
-                        // for (const pair of userUpdateData.entries()) {
-                        //     console.log(pair[0]+ ': ' + pair[1]); 
-                        // }
 
                         alert(response.error.message);
                         console.error('Error:', response.error.message);
                         span.classList.remove('d-none');
 
-                        // 获取所有的 input 元素
                         const inputs = document.querySelectorAll('input');
 
-                        // 遍历所有的 input 元素并清空其值
                         inputs.forEach(input => {
                             input.value = '';
                         });
@@ -312,10 +276,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveIcon.remove();
                 cancelIcon.remove();
                 icon.classList.remove('d-none');
-                 // 获取所有的 input 元素
+
                  const inputs = document.querySelectorAll('input');
 
-                 // 遍历所有的 input 元素并清空其值
                  inputs.forEach(input => {
                      input.value = '';
                  });
@@ -361,29 +324,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     updateUserProfile(userUpdateData)
                     .then(response => {
                         if (response.error) {
-                            // // console.log(response);
-                            // console.log("清空前");
-    
-                            // // 遍歷對象的屬性
-                            // for (const pair of userUpdateData.entries()) {
-                            //     console.log(pair[0]+ ': ' + pair[1]); 
-                            // }
-    
-                            // 清空對象
+
                             userUpdateData = new FormData();
-    
-                            // console.log("清空後");
-    
-                            // // 確認對象已經被清空
-                            // for (const pair of userUpdateData.entries()) {
-                            //     console.log(pair[0]+ ': ' + pair[1]); 
-                            // }
-    
+
                             alert(response.error.message);
                             console.error('Error:', response.error.message);
                             span.classList.remove('d-none');
     
-                            // 所有input 元素清空值
                             currentPassword = "";
                             newPassword = "";
                             confirmPassword = "";

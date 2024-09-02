@@ -90,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
             playerA.className = 'player draggable';
             playerA.textContent = i;
 
-            // 設定位置
             playerA.style.top = positions[`A${i}`].top;
             playerA.style.left = positions[`A${i}`].left;
 
@@ -102,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
             playerB.className = 'player draggable';
             playerB.textContent = i;
 
-            // 設定位置
             playerB.style.top = positions[`B${i}`].top;
             playerB.style.left = positions[`B${i}`].left;
             
@@ -137,25 +135,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         listeners: {
         // call this function on every dragmove event
-        start: dragStartListener, // 监听拖拽开始事件
-        move: dragMoveListener,    // 监听拖拽移动事件
-        // move: dragMoveListener,
+        start: dragStartListener, 
+        move: dragMoveListener,    
 
         // call this function on every dragend event
         end (event) {
-            // 仅在拖动结束时更新位置记录
             updatePosition(event.target);
         }
         }
     });
 
-    let offsetX = 0; // 鼠标点击点与元素左边界的水平偏移
-    let offsetY = 0; // 鼠标点击点与元素上边界的垂直偏移
+    let offsetX = 0; 
+    let offsetY = 0; 
 
     function dragStartListener(event) {
         const target = event.target;
 
-        // 获取鼠标点击点与元素左上角的偏移
         const targetRect = target.getBoundingClientRect();
         offsetX = event.clientX - targetRect.left;
         offsetY = event.clientY - targetRect.top;
@@ -164,45 +159,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function dragMoveListener(event) {
         const target = event.target;
 
-        // 计算相对父容器的位置
         const parentRect = target.parentElement.getBoundingClientRect();
 
-        // 使用偏移计算新的位置
         const x = ((event.clientX - parentRect.left - offsetX) / parentRect.width) * 100;
         const y = ((event.clientY - parentRect.top - offsetY) / parentRect.height) * 100;
 
-        // 更新元素的left和top样式为百分比值
         target.style.left = `${x}%`;
         target.style.top = `${y}%`;
     }
 
-
-    // function dragMoveListener (event) {
-    //     const target = event.target;
-
-    //     // 计算相对父容器的位置
-    //     const parentRect = target.parentElement.getBoundingClientRect();
-
-    //     const x = (event.clientX - parentRect.left) / parentRect.width * 100;
-    //     const y = (event.clientY - parentRect.top) / parentRect.height * 100;
-
-    //     // 更新元素的 transform 样式
-    //     target.style.left = `${x}%`;
-    //     target.style.top = `${y}%`;
-
-    //     // // 更新位置属性
-    //     // target.setAttribute('data-x', x);
-    //     // target.setAttribute('data-y', y);
-    // }
-
     function updatePosition(element) {
-        // 获取元素的 ID 和当前位置百分比
         const id = element.id;
         const x = parseFloat(element.style.left) || 0;
         const y = parseFloat(element.style.top) || 0;
 
-
-        // 更新位置对象
         if (!positions[currentStep_number]) {
             positions[currentStep_number] = {};
         }
@@ -212,13 +182,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     function recordPositions() {
-        // 记录所有球员和球的位置
         document.querySelectorAll('.draggable').forEach(element => {
             updatePosition(element);
         });
 
         const positionsKey = `positions_step_${currentStep_number}`;
-        localStorage.removeItem(positionsKey); // 清除旧的记录
+        localStorage.removeItem(positionsKey); 
         localStorage.setItem(positionsKey, JSON.stringify(positions[currentStep_number]));
 
         console.log('Recorded positions for step', currentStep_number, ':', positions);
@@ -233,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const { x, y } = savedPositions[id];
             const element = document.getElementById(id);
             if (element) {
-                // 直接使用百分比设置元素的位置
                 element.style.left = `${x}%`;
                 element.style.top = `${y}%`;
 
@@ -277,11 +245,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     saveButton.addEventListener('click', () => {
-        recordPositions(); // 记录位置
+        recordPositions(); 
 
         const tacticId = localStorage.getItem('tactic_id')||localStorage.getItem('tactic_id_p');
         const totalSteps = parseInt(document.querySelector('#total-steps').innerText);
-        const promises = []; // 用于存储所有的保存请求的 Promise
+        const promises = []; 
     
         // Loop through each step and save its data
         for (let step = 1; step <= totalSteps; step++) {
@@ -310,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 player_A: playerA,
                 player_B: playerB,
                 ball: ball,
-                description: null, // Save description as null
+                description: null, 
             };
     
             // console.log(payload);
@@ -327,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 if (data.error) {
                     console.error('Error saving tactic content:', data.message);
-                    throw new Error(data.message); // 抛出错误以便 Promise.all 处理
+                    throw new Error(data.message); 
                 } else {
                     // console.log(data);
                     console.log(`Successfully saved content for step ${step}`);
@@ -335,16 +303,16 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 console.error('Error saving tactic content:', error);
-                throw error; // 确保在出现错误时捕获异常
+                throw error; 
             });
     
-            promises.push(promise); // 将每个请求的 promise 加入数组
+            promises.push(promise); 
         }
     
-        // 等待所有请求完成
+
         Promise.all(promises)
             .then(() => {
-                alert('戰術內容已成功儲存');
+                alert("戰術內容已成功儲存");
                 window.location.href = "/myTactics"
 
                 for (let i = localStorage.length - 1; i >= 0; i--) {
@@ -362,15 +330,15 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 console.error('One or more steps failed to save:', error);
-                alert('某些步驟未能成功保存，請檢查錯誤。');
+                alert("某些步驟未能成功保存，請檢查錯誤。");
             });
     });
 
-    let isPlaying = false; // 初始化播放狀態為停止
+    let isPlaying = false; 
     let playInterval;
 
     const playStopButton = document.querySelector('#play_stop');
-    playStopButton.style.backgroundImage = 'url(/static/images/play.png)'; // 初始化按鈕為播放圖標
+    playStopButton.style.backgroundImage = 'url(/static/images/play.png)'; 
 
     playStopButton.addEventListener('click', () => {
         if (isPlaying) {
@@ -388,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
         playStopButton.style.backgroundImage = 'url(/static/images/stop.png)'; // 切換按鈕為停止圖標
         playInterval = setInterval(() => {
             nextStepFunction();
-        }, 500); // 每0.5秒更新一步，你可以調整這個速度
+        }, 500); // 每0.5秒更新一步
     }
 
     function stopPlay() {
@@ -415,6 +383,5 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#current-step').innerText = currentStep_number;
         loadPositions(); // 載入該步驟的記錄位置
     }
-
 
 });

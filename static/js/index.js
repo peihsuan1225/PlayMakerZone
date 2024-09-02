@@ -1,15 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // for (let i = localStorage.length - 1; i >= 0; i--) {
-    //     const key = localStorage.key(i);
-    //     if (key.startsWith('positions_step_')) {
-    //         localStorage.removeItem(key);
-    //     }
-    // }
-    // if (localStorage.tactic_id) {
-    //     localStorage.removeItem("tactic_id");
-    // }
 
-    //$ = jQuery;
     $(':radio').mousedown(function(e) {
         let $self = $(this);
         if ($self.is(':checked')) {
@@ -39,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const modes = Array.from(document.querySelectorAll('input[name="mode"]:checked')).map(el => el.value);
         const difficulties = Array.from(document.querySelectorAll('input[name="difficulty"]:checked')).map(el => el.value);
 
-        // 构建查询参数
         const queryParams = new URLSearchParams();
         if (searchInput) queryParams.append('search', searchInput);
         if (playerCounts.length) queryParams.append('playerCounts', playerCounts.join(','));
@@ -144,8 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 starElement.className = "fas fa-star";
                 star.appendChild(starElement);
             }
-        
-    
+         
             const cardText3 = document.createElement("p");
             cardText3.className = "card-text";
     
@@ -169,13 +157,12 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         searchResult.appendChild(row);
     }
-    // 添加事件監聽器到搜尋按鈕
+
     document.querySelector('#searchBtn1').addEventListener('click', (e) => {
         e.preventDefault();
         fetchAndDisplayTactics();
     });
 
-    // 添加事件監聽器到篩選按鈕
     document.querySelector('#searchBtn2').addEventListener('click', (e) => {
         e.preventDefault();
         fetchAndDisplayTactics();

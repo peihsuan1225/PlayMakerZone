@@ -125,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const { x, y } = savedPositions[id];
             const element = document.getElementById(id);
             if (element) {
-                // 直接使用百分比设置元素的位置
                 element.style.left = `${x}%`;
                 element.style.top = `${y}%`;
 
@@ -157,11 +156,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    let isPlaying = false; // 初始化播放狀態為停止
+    let isPlaying = false; 
     let playInterval;
 
     const playStopButton = document.querySelector('#play_stop');
-    playStopButton.style.backgroundImage = 'url(/static/images/play.png)'; // 初始化按鈕為播放圖標
+    playStopButton.style.backgroundImage = 'url(/static/images/play.png)'; 
 
     playStopButton.addEventListener('click', () => {
         if (isPlaying) {
@@ -173,16 +172,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startPlay() {
         isPlaying = true;
-        playStopButton.style.backgroundImage = 'url(/static/images/stop.png)'; // 切換按鈕為停止圖標
+        playStopButton.style.backgroundImage = 'url(/static/images/stop.png)'; 
         playInterval = setInterval(() => {
             nextStepFunction();
-        }, 500); // 每0.5秒更新一步，你可以調整這個速度
+        }, 500); // 每0.5秒更新一步
     }
 
     function stopPlay() {
         isPlaying = false;
-        playStopButton.style.backgroundImage = 'url(/static/images/play.png)'; // 切換按鈕為播放圖標
-        clearInterval(playInterval); // 清除定時器，停止播放
+        playStopButton.style.backgroundImage = 'url(/static/images/play.png)'; 
+        clearInterval(playInterval); 
     }
 
     function nextStepFunction() {

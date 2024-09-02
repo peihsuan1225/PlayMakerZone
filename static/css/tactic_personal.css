@@ -33,6 +33,7 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
+
 .status-img {
     width: 30px;
     margin: auto auto 8px 10px;
@@ -126,7 +127,7 @@
         flex-wrap: wrap;
     }
     .tactics-section .col-md-6 {
-        flex: 0 0 33.3333%; /* 每個卡片佔三分之一的寬度 */
+        flex: 0 0 33.3333%;
         max-width: 33.3333%;
     }
 }

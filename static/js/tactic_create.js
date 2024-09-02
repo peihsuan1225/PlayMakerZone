@@ -81,13 +81,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const requestData = {
             name: tacticName,
             player: parseInt(playerCount),
-            member_id: parseInt(JSON.parse(atob(token.split('.')[1])).id), // 從 token 中提取 member_id
+            member_id: parseInt(JSON.parse(atob(token.split('.')[1])).id), 
             tags: tags,
             level: level,
             status: status
         };
 
-        // 發送 POST 請求到 "/api/tactic"
         fetch('/api/tactic', {
             method: 'POST',
             headers: {
@@ -104,7 +103,6 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(data => {
             localStorage.removeItem('tactic_id_p');
-            // 成功處理，導向下一頁或其他操作
             alert('戰術已成功建立');
             window.location.href = '/createTactic/content'; 
         })

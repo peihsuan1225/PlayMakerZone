@@ -1,10 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // for (let i = localStorage.length - 1; i >= 0; i--) {
-    //     const key = localStorage.key(i);
-    //     if (key.startsWith('positions_step_')) {
-    //         localStorage.removeItem(key);
-    //     }
-    // }
+
     const token = localStorage.getItem('token');
     if (token){
          fetch("/api/user/auth", {

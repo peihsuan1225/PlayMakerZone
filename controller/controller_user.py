@@ -1,4 +1,4 @@
-from fastapi import UploadFile, File, Form
+from fastapi import UploadFile
 from passlib.hash import bcrypt
 import jwt
 import aiomysql
@@ -49,15 +49,12 @@ async def check_username_exists(username: str) -> bool:
 
 async def sign_up_user(signup_input: SignupRequest):
     try:
-        # 檢查 email 是否已存在
         if await check_email_exists(signup_input.email):
             return {"error": True, "message": "電子信箱已存在"}, 400
 
-        # 檢查 username 是否已存在
         if await check_username_exists(signup_input.username):
             return {"error": True, "message": "使用者名稱已存在"}, 400
 
-        # 創建新會員
         hashed_password = bcrypt.hash(signup_input.password)
         tz = timezone(timedelta(hours=+8))
         current_time = datetime.now(tz)
@@ -182,18 +179,17 @@ async def update_avatar(user_avatar: str, avatar_url: UploadFile = None, default
     if avatar_url:
         if user_avatar and user_avatar.startswith("https://"):
             parsed_url  = urlparse(user_avatar)
-            # 提取路徑部分
+
             path = parsed_url.path
 
-            # 提取檔案名稱
-            filename = unquote(path.split('/')[-1])
+            filename = unquote(path.split("/")[-1])
 
             s3_client.delete_object(
                 Bucket=bucket_name,
                 Key=filename
             )
 
-        file_key = str(uuid.uuid4()) + '-' + avatar_url.filename
+        file_key = str(uuid.uuid4()) + "-" + avatar_url.filename
         s3_client.upload_fileobj(avatar_url.file, bucket_name, file_key)
         result = f"https://d3u0kqiunxz7fm.cloudfront.net/{file_key}"
     elif default_avatar:
@@ -263,7 +259,7 @@ async def update_user_profile(user_update: dict[str, Optional[str]], user: dict)
         params.append(hashed_password)
     
     if update_query.endswith(", "):
-        update_query = update_query[:-2]  # Remove trailing comma
+        update_query = update_query[:-2]
         update_query += " WHERE id = %s"
         params.append(user_id)
 

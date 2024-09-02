@@ -1,10 +1,8 @@
 from fastapi import Query
 from model.model import TacticRequest, TacticContentRequest
-from fastapi.responses import JSONResponse
 from config import get_db_connection
 import aiomysql
 import json
-import os
 from datetime import datetime, timezone, timedelta
 from typing import List, Optional, Dict, Any, Tuple
 
@@ -52,8 +50,7 @@ async def get_searched_tactics(
         if modes:
             mode_conditions = []
             for mode_set in modes:
-                # 拆分每个模式字符串
-                tags = mode_set.split(',')
+                tags = mode_set.split(",")
                 for tag in tags:
                     mode_conditions.append("JSON_CONTAINS(ti.tags, %s, '$')")
                     params.append(json.dumps([tag]))
@@ -70,7 +67,7 @@ async def get_searched_tactics(
         if difficulties:
             difficulty_conditions = []
             for difficulty_set in difficulties:
-                difficulty_values = difficulty_set.split(',')
+                difficulty_values = difficulty_set.split(",")
                 difficulty_conditions.append("(" + " OR ".join(["(ti.level = %s)"] * len(difficulty_values)) + ")")
                 params.extend(difficulty for difficulty in difficulty_values)
             conditions.append(" AND ".join(difficulty_conditions))
@@ -155,7 +152,7 @@ async def get_member_tactics(page: int, userName: str = Query(None), userID: int
             if userName:
                 conditions.append("m.username = %s")
                 params.append(userName)
-                conditions.append("ti.status = '公開'")
+                conditions.append("ti.status = 公開")
                 conditions.append("ti.finished = 1")
 
             # 本人>用member_id去撈，不用作狀態篩選，全部資料都撈
