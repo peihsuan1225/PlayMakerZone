@@ -117,6 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 處理拖曳效果
     const positions = {};
+    let changed = false;
+    const changedElements = new Set();
 
     // target elements with the "draggable" class
     interact('.draggable')
@@ -141,6 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // call this function on every dragend event
         end (event) {
             updatePosition(event.target);
+            // changedElements.add(event.target.id);
         }
         }
     });
@@ -166,6 +169,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         target.style.left = `${x}%`;
         target.style.top = `${y}%`;
+
+        changed = true;
+        changedElements.add(target.id); 
     }
 
     function updatePosition(element) {
@@ -177,6 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
             positions[currentStep_number] = {};
         }
         positions[currentStep_number][id] = { x: x, y: y };
+
+        // console.log(positions);
     }
     
     
@@ -190,6 +198,8 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem(positionsKey); 
         localStorage.setItem(positionsKey, JSON.stringify(positions[currentStep_number]));
 
+        changed = false;
+        changedElements.clear();
         console.log('Recorded positions for step', currentStep_number, ':', positions);
     }
 
@@ -197,7 +207,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadPositions() {
         const positionsKey = `positions_step_${currentStep_number}`;
         const savedPositions = JSON.parse(localStorage.getItem(positionsKey)) || {};
-    
+        
+        // console.log(positionsKey);
+        // console.log(savedPositions);
+
         Object.keys(savedPositions).forEach(id => {
             const { x, y } = savedPositions[id];
             const element = document.getElementById(id);
@@ -228,15 +241,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
     prevStep.addEventListener('click', () => {
         if (currentStep_number > 1) {
+            if (totalSteps_number > currentStep_number && changed) {
+                console.log('已更動的元素:', Array.from(changedElements));
+                console.log('已更動的元素:', Array.from(changedElements));
+                for (let step = currentStep_number+1; step <= totalSteps_number; step++) {
+                    const positionsKey = `positions_step_${step}`;
+                    const stepPositions = JSON.parse(localStorage.getItem(positionsKey)) || {};
+    
+                    changedElements.forEach(id => {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            const x = parseFloat(element.style.left) || 0;
+                            const y = parseFloat(element.style.top) || 0;
+                            stepPositions[id] = { x, y };
+                        }
+                    });
+                    localStorage.setItem(positionsKey, JSON.stringify(stepPositions));
+                }
+            }
             recordPositions();
             currentStep_number--;
             document.querySelector('#current-step').innerText = currentStep_number;
             loadPositions();
         }
+    
     });
 
     nextStep.addEventListener('click', () => {
         if (currentStep_number < totalSteps_number) {
+            if (changed){
+                console.log('已更動的元素:', Array.from(changedElements));
+                for (let step = currentStep_number+1; step <= totalSteps_number; step++) {
+                    const positionsKey = `positions_step_${step}`;
+                    const stepPositions = JSON.parse(localStorage.getItem(positionsKey)) || {};
+    
+                    changedElements.forEach(id => {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            const x = parseFloat(element.style.left) || 0;
+                            const y = parseFloat(element.style.top) || 0;
+                            stepPositions[id] = { x, y };
+                        }
+                    });
+                    localStorage.setItem(positionsKey, JSON.stringify(stepPositions));
+                }
+            }
             recordPositions();
             currentStep_number++;
             document.querySelector('#current-step').innerText = currentStep_number;
@@ -383,5 +432,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#current-step').innerText = currentStep_number;
         loadPositions(); // 載入該步驟的記錄位置
     }
+
+    const resetBtn = document.querySelector("#reset");
+    resetBtn.addEventListener("click", function() {
+        const confirmed = confirm("重置後不可復原，請確認是否重置所有戰術內容?");
+        if(confirmed){
+            window.location.reload();
+        }
+    });
 
 });
