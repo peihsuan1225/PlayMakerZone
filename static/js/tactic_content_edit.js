@@ -231,19 +231,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveButton = document.querySelector('#save');
 
     addStep.addEventListener("click", () => {
+        if (currentStep_number == totalSteps_number && totalSteps_number == 1) {
+            saveThumbnailToSessionStorage(currentStep_number);
+        }
         recordPositions();
         totalSteps_number++;
         document.querySelector('#total-steps').innerText = totalSteps_number;
         currentStep_number++;
         document.querySelector('#current-step').innerText = currentStep_number;
         loadPositions();
+        updateStarIcon(currentStep_number);
     });
 
     prevStep.addEventListener('click', () => {
         if (currentStep_number > 1) {
             if (totalSteps_number > currentStep_number && changed) {
-                console.log('已更動的元素:', Array.from(changedElements));
-                console.log('已更動的元素:', Array.from(changedElements));
+                // console.log('已更動的元素:', Array.from(changedElements));
                 for (let step = currentStep_number+1; step <= totalSteps_number; step++) {
                     const positionsKey = `positions_step_${step}`;
                     const stepPositions = JSON.parse(localStorage.getItem(positionsKey)) || {};
@@ -263,6 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentStep_number--;
             document.querySelector('#current-step').innerText = currentStep_number;
             loadPositions();
+            updateStarIcon(currentStep_number);
         }
     
     });
@@ -290,6 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentStep_number++;
             document.querySelector('#current-step').innerText = currentStep_number;
             loadPositions();
+            updateStarIcon(currentStep_number);
         }
     });
 
@@ -440,5 +445,61 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.reload();
         }
     });
+
+
+    function saveThumbnailToSessionStorage(currentStepNumber) {
+        // 設定背景圖
+        const star = document.querySelector("#star");
+        star.style.backgroundImage = "url(/static/images/star_fill.png)";
+    
+        // 生成截圖並轉換為 Blob
+        html2canvas(document.querySelector("#tactic-board")).then(canvas => {
+            
+            // 將 canvas 轉換為 JPEG 格式的 Blob
+            canvas.toBlob(function(blob) {
+                
+                const keyPrefix = 'thumbnail_';
+                const key = keyPrefix + currentStepNumber;
+    
+                // 刪除已存在的鍵（如果存在）
+                const existingKey = Object.keys(sessionStorage).find(k => k.startsWith(keyPrefix));
+                if (existingKey) {
+                    sessionStorage.removeItem(existingKey);
+                }
+    
+                // 將 Blob 存儲到 sessionStorage 中
+                sessionStorage.setItem(key, URL.createObjectURL(blob));
+    
+                // 釋放 URL 對象
+                URL.revokeObjectURL(URL.createObjectURL(blob));
+            
+            }, "image/jpeg", 0.7); 
+        
+        });
+    }
+
+    function updateStarIcon(currentStep_number) {
+        const keyPrefix = 'thumbnail_';
+        const existingKey = Object.keys(sessionStorage).find(k => k.startsWith(keyPrefix));
+        const thumbnail_numberPart = existingKey ? existingKey.substring(keyPrefix.length) : null;
+    
+        const star = document.querySelector("#star");
+
+        if (thumbnail_numberPart && currentStep_number == thumbnail_numberPart) {
+            star.style.backgroundImage = "url(/static/images/star_fill.png)";
+        } else {
+            star.style.backgroundImage = "url(/static/images/star_empty.png)";
+        }
+    }
+
+    const star = document.querySelector("#star");
+    star.addEventListener("click", function(){
+
+        let currentStep_number = parseInt(document.querySelector('#current-step').innerText);
+
+        saveThumbnailToSessionStorage(currentStep_number);
+    });
+    
+
 
 });

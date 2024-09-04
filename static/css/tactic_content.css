@@ -10,6 +10,10 @@
     margin: 10px 0 0 10vw;
 }
 
+button{
+    outline: none;
+}
+
 .step {
     font-size: 18px;
     color: #888;
@@ -57,6 +61,16 @@
     background-color: transparent;
 }
 
+#star {
+    background-image: url(/static/images/star_empty.png);
+    background-size: cover;
+    width: 30px;
+    height: 30px;
+    border: none;
+    background-color: transparent;
+    margin-left: 20px
+}
+
 #reset{
     background-image: url(/static/images/reset.png);
     background-size: cover;
@@ -87,7 +101,7 @@
 }
 
 #court {
-    max-width: 100%;
+    max-width: 80vw;
     max-height: calc(100vh - 250px);
     border: #d19546c2 solid;
     user-select: none;

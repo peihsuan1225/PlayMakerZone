@@ -21,7 +21,7 @@ s3_client = boto3.client(
     aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
     region_name='us-west-1'
 )
-bucket_name = 'playmakerzone-avatar'
+bucket_name = 'playmakerzone'
 
 async def check_email_exists(email: str) -> bool:
     conn = await get_db_connection()
@@ -186,10 +186,10 @@ async def update_avatar(user_avatar: str, avatar_url: UploadFile = None, default
 
             s3_client.delete_object(
                 Bucket=bucket_name,
-                Key=filename
+                Key=f"avatar/{filename}"
             )
 
-        file_key = str(uuid.uuid4()) + "-" + avatar_url.filename
+        file_key = f"avatar/{str(uuid.uuid4())}-{avatar_url.filename}"
         s3_client.upload_fileobj(avatar_url.file, bucket_name, file_key)
         result = f"https://d3u0kqiunxz7fm.cloudfront.net/{file_key}"
     elif default_avatar:
