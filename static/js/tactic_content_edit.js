@@ -298,94 +298,111 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    saveButton.addEventListener('click', () => {
-        recordPositions(); 
+    saveButton.addEventListener('click', async () => {
+        try{
+            recordPositions(); 
 
-        const tacticId = localStorage.getItem('tactic_id')||localStorage.getItem('tactic_id_p');
-        const totalSteps = parseInt(document.querySelector('#total-steps').innerText);
-        const promises = []; 
+            const tacticId = localStorage.getItem('tactic_id')||localStorage.getItem('tactic_id_p');
+            const totalSteps = parseInt(document.querySelector('#total-steps').innerText);
+            const promises = []; 
+            
+            const uploadThumbnailPromise = uploadThumbnailToBackend();
+            promises.push(uploadThumbnailPromise);
+            
+            // Loop through each step and save its data
+            for (let step = 1; step <= totalSteps; step++) {
+                const positionsKey = `positions_step_${step}`;
+                const stepPositions = JSON.parse(localStorage.getItem(positionsKey)) || {};
+        
+                // Extract positions for players and ball
+                const playerA = [];
+                const playerB = [];
+                let ball = [];
     
-        // Loop through each step and save its data
-        for (let step = 1; step <= totalSteps; step++) {
-            const positionsKey = `positions_step_${step}`;
-            const stepPositions = JSON.parse(localStorage.getItem(positionsKey)) || {};
-    
-            // Extract positions for players and ball
-            const playerA = [];
-            const playerB = [];
-            let ball = [];
-    
-            for (const [key, { x, y }] of Object.entries(stepPositions)) {
-                if (key.startsWith('A')) {
-                    playerA.push({ id: key, x, y });
-                } else if (key.startsWith('B')) {
-                    playerB.push({ id: key, x, y });
-                } else if (key === 'ball') {
-                    ball = [{ id: key, x, y }];
-                }
-            }
-    
-            // Create the payload for each step
-            const payload = {
-                tactic_id: parseInt(tacticId),
-                step: parseInt(step),
-                player_A: playerA,
-                player_B: playerB,
-                ball: ball,
-                description: null, 
-            };
-    
-            // console.log(payload);
-    
-            // Send POST request for each step and add the promise to the array
-            const promise = fetch('/api/tactic/content', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    console.error('Error saving tactic content:', data.message);
-                    throw new Error(data.message); 
-                } else {
-                    // console.log(data);
-                    console.log(`Successfully saved content for step ${step}`);
-                }
-            })
-            .catch(error => {
-                console.error('Error saving tactic content:', error);
-                throw error; 
-            });
-    
-            promises.push(promise); 
-        }
-    
-
-        Promise.all(promises)
-            .then(() => {
-                alert("戰術內容已成功儲存");
-                window.location.href = "/myTactics"
-
-                for (let i = localStorage.length - 1; i >= 0; i--) {
-                    const key = localStorage.key(i);
-                    if (key.startsWith('positions_step_')) {
-                        localStorage.removeItem(key);
+                for (const [key, { x, y }] of Object.entries(stepPositions)) {
+                    if (key.startsWith('A')) {
+                        playerA.push({ id: key, x, y });
+                    } else if (key.startsWith('B')) {
+                        playerB.push({ id: key, x, y });
+                    } else if (key === 'ball') {
+                        ball = [{ id: key, x, y }];
                     }
                 }
-                if (localStorage.tactic_id) {
-                    localStorage.removeItem("tactic_id");
+    
+                // Create the payload for each step
+                const payload = {
+                    tactic_id: parseInt(tacticId),
+                    step: parseInt(step),
+                    player_A: playerA,
+                    player_B: playerB,
+                    ball: ball,
+                    description: null, 
+                };
+    
+                // console.log(payload);
+        
+                // Send POST request for each step and add the promise to the array
+                const promise = fetch('/api/tactic/content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            console.error('Error saving tactic content:', data.message);
+                            throw new Error(data.message); 
+                        } else {
+                            // console.log(data);
+                            console.log(`Successfully saved content for step ${step}`);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error saving tactic content:', error);
+                        throw error; 
+                    });
+        
+                promises.push(promise); 
+            }
+            
+            // 使用 Promise.allSettled 來確保所有的 Promise 都被處理，即使有錯誤發生
+            const results = await Promise.allSettled(promises);
+
+            // 檢查是否有任何 Promise 被拒絕
+            const hasError = results.some(result => result.status === 'rejected');
+
+            if (hasError) {
+                throw new Error('Some steps failed to save. Please check the error messages.');
+            }
+
+            alert("戰術內容已成功儲存");
+            window.location.href = "/myTactics"
+
+            for (let i = localStorage.length - 1; i >= 0; i--) {
+                const key = localStorage.key(i);
+                if (key.startsWith('positions_step_')) {
+                    localStorage.removeItem(key);
                 }
-                if (localStorage.tactic_id_p) {
-                    localStorage.removeItem("tactic_id_p");
-                }
-            })
-            .catch(error => {
-                console.error('One or more steps failed to save:', error);
-                alert("某些步驟未能成功保存，請檢查錯誤。");
-            });
+            }
+            if (localStorage.tactic_id) {
+                localStorage.removeItem("tactic_id");
+            }
+            if (localStorage.tactic_id_p) {
+                localStorage.removeItem("tactic_id_p");
+            }
+
+            const keyPrefix = 'thumbnail_';
+            const existingKey = Object.keys(sessionStorage).find(k => k.startsWith(keyPrefix));
+            if (existingKey) {
+                sessionStorage.removeItem(existingKey);
+            }
+            
+        }catch(error) {
+            console.error('One or more steps failed to save:', error);
+            alert("某些步驟未能成功保存，請檢查錯誤。");
+        }
     });
 
     let isPlaying = false; 
@@ -499,6 +516,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
         saveThumbnailToSessionStorage(currentStep_number);
     });
+
+    async function uploadThumbnailToBackend() {
+        const tacticId = localStorage.getItem('tactic_id')||localStorage.getItem('tactic_id_p');
+        const keyPrefix = 'thumbnail_';
+        const thumbnailKey = Object.keys(sessionStorage).find(k => k.startsWith(keyPrefix));
+        if (thumbnailKey) {
+            // 從鍵名中提取步驟數字
+            const step = thumbnailKey.substring(keyPrefix.length);
+            const blobUrl = sessionStorage.getItem(thumbnailKey);
+            const blob = await fetch(blobUrl).then(r => r.blob());
+
+            const formData = new FormData();
+            formData.append('tactic_id', tacticId);
+            formData.append('step', step);
+            formData.append('file', blob, 'thumbnail.png');
+
+            try {
+                const response = await fetch('/api/tactic/thumbnail', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (response.ok) {
+                    console.log('Thumbnail uploaded successfully:', result);
+                } else {
+                    console.error('Error uploading thumbnail:', result);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                throw error; // 確保錯誤被拋出，傳遞給 Promise.all
+            }
+        } else {
+            console.error('No thumbnail information found in sessionStorage.');
+            throw new Error('No thumbnail information found.');
+        }
+    }
     
 
 

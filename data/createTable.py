@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS tactics_info(
     update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     finished INT UNSIGNED DEFAULT 0 COMMENT'0 unfinished, 1 finished',
-    tumbnail INT UNSIGNED DEFAULT 1,
+    thumbnail INT UNSIGNED DEFAULT 1,
     FOREIGN KEY (member_id) REFERENCES member(id)
 )
 '''

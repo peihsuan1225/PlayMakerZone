@@ -1,10 +1,27 @@
-from fastapi import Query
+from fastapi import Query, UploadFile
 from model.model import TacticRequest, TacticContentRequest
 from config import get_db_connection
 import aiomysql
 import json
 from datetime import datetime, timezone, timedelta
 from typing import List, Optional, Dict, Any, Tuple
+import boto3
+import os
+from dotenv import load_dotenv
+from urllib.parse import urlparse, unquote
+import uuid
+import aiohttp
+import io
+
+load_dotenv()
+
+s3_client = boto3.client(
+    's3',
+    aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+    aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
+    region_name='us-west-1'
+)
+bucket_name = 'playmakerzone'
 
 async def get_searched_tactics(
     page: int,
@@ -456,3 +473,99 @@ async def delete_tactic(tactic_id, user):
     
     finally:
         await conn.ensure_closed()
+
+async def update_thumbnail(tactic_id: int, step: int, file: UploadFile):
+    try:
+        file_obj = io.BytesIO(await file.read())
+
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+
+            get_oldurl_query='''
+            SELECT ti.id AS tactic_id, ti.thumbnail, ts.image_url
+            FROM tactics_info ti
+            JOIN tactic_screenshots ts
+            ON ti.id = ts.tactic_id
+            AND ti.thumbnail = ts.step
+            WHERE ti.id = %s
+            '''
+
+            await cursor.execute(get_oldurl_query, (tactic_id,))
+            result = await cursor.fetchone()
+
+            if result:
+                old_image_url = result['image_url']
+
+                if old_image_url and old_image_url.startswith("https://"):
+                    parsed_url  = urlparse(old_image_url)
+                    path = parsed_url.path
+                    filename = unquote(path.split("/")[-1])
+
+                    s3_client.delete_object(
+                        Bucket=bucket_name,
+                        Key=f"thumbnail/{filename}"
+                    )
+
+            # 設定上傳到 S3 的檔案路徑
+            file_key = f"thumbnail/{str(uuid.uuid4())}-{file.filename}"
+
+            # 上傳檔案到 S3
+            s3_client.upload_fileobj(file_obj, bucket_name, file_key)
+
+            # 關閉檔案物件
+            file_obj.close()
+
+            new_url = f"https://d3u0kqiunxz7fm.cloudfront.net/{file_key}"
+
+            updateThumbnailStep_query = '''
+            UPDATE tactics_info 
+            SET thumbnail = %s
+            WHERE id = %s
+            '''
+            await cursor.execute(updateThumbnailStep_query, (step, tactic_id))
+            
+            # 先確認是否有 tactic_id 和 step 的紀錄
+            check_query = '''
+            SELECT COUNT(*) AS count
+            FROM tactic_screenshots
+            WHERE tactic_id = %s AND step = %s
+            '''
+
+            await cursor.execute(check_query, (tactic_id, step))
+            result = await cursor.fetchone()
+            print("檢查結果")
+            print(result)
+
+            if result[0] == 0:
+                # 沒有紀錄，則執行 INSERT
+                insert_query = '''
+                INSERT INTO tactic_screenshots (tactic_id, step, image_url)
+                VALUES (%s, %s, %s)
+                '''
+                await cursor.execute(insert_query, (tactic_id, step, new_url))
+                print("新增")
+                print(insert_query)
+                print(tactic_id)
+                print(step)
+                print(new_url)
+            else:
+                # 有紀錄，則執行 UPDATE
+                update_query = '''
+                UPDATE tactic_screenshots
+                SET image_url = %s
+                WHERE tactic_id = %s AND step = %s
+                '''
+                await cursor.execute(update_query, (new_url, tactic_id, step))
+                print("更新")
+                print(update_query)
+                print(tactic_id)
+                print(step)
+                print(new_url)
+
+        await conn.ensure_closed()
+
+        return {"success": True}, 200
+    
+    except Exception as e:
+        return {"error": True, "message": str(e)}, 500
+    
