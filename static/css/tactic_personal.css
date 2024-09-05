@@ -1,7 +1,7 @@
 .profile-section {
     background-color: #fff;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: .25rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
     position: sticky;
@@ -29,9 +29,9 @@
     margin-top: 20px;
 }
 
-.tactic-card {
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.thumbnail {
+    width: 100%;
+    aspect-ratio: 35 / 23;
 }
 
 .status-img {

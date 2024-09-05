@@ -87,8 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.cursor = "pointer";                 
     
             const tumbnail = document.createElement("img");
-            tumbnail.className = "card-img-top";
-            tumbnail.src ="/static/images/tumbnail.png";
+            tumbnail.className = "card-img-top thumbnail";
+            tumbnail.src = tactic.thumbnail_url || "/static/images/tumbnail.png";
             tumbnail.alt = "戰術縮圖";
     
             const cardBody = document.createElement("div");

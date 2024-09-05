@@ -10,7 +10,6 @@ import os
 from dotenv import load_dotenv
 from urllib.parse import urlparse, unquote
 import uuid
-import aiohttp
 import io
 
 load_dotenv()
@@ -40,16 +39,19 @@ async def get_searched_tactics(
        async with conn.cursor(aiomysql.DictCursor) as cursor:
 
         base_query = '''
-        SELECT ti.*, m.username FROM tactics_info ti
+        SELECT ti.*, m.username, ts.image_url as thumbnail_url
+        FROM tactics_info ti
         JOIN member m ON ti.member_id = m.id
-        WHERE ti.status = "公開" AND ti.finished ="1"
+        LEFT JOIN tactic_screenshots ts ON ti.id = ts.tactic_id AND ti.thumbnail = ts.step
+        WHERE ti.status = "公開" AND ti.finished = "1"
         '''
 
         count_query='''
         SELECT COUNT(*) AS total 
         FROM tactics_info ti
         JOIN member m ON ti.member_id = m.id
-        WHERE ti.status = "公開" AND ti.finished ="1"
+        LEFT JOIN tactic_screenshots ts ON ti.id = ts.tactic_id AND ti.thumbnail = ts.step
+        WHERE ti.status = "公開" AND ti.finished = "1"
         '''
 
         conditions =[]
@@ -126,6 +128,7 @@ async def get_searched_tactics(
                         "username": tactic["username"],
                         "member_id": tactic["member_id"],
                         "update_time":tactic["update_time"].isoformat(),
+                        "thumbnail_url": tactic["thumbnail_url"]
                     }
                     for tactic in tactics
                 ]
@@ -149,8 +152,10 @@ async def get_member_tactics(page: int, userName: str = Query(None), userID: int
         async with conn.cursor(aiomysql.DictCursor) as cursor:
 
             base_query = '''
-            SELECT ti.*, m.username FROM tactics_info ti
+            SELECT ti.*, m.username, ts.image_url as thumbnail_url
+            FROM tactics_info ti
             JOIN member m ON ti.member_id = m.id
+            LEFT JOIN tactic_screenshots ts ON ti.id = ts.tactic_id AND ti.thumbnail = ts.step
             WHERE
             '''
 
@@ -158,6 +163,7 @@ async def get_member_tactics(page: int, userName: str = Query(None), userID: int
             SELECT COUNT(*) AS total
             FROM tactics_info ti
             JOIN member m ON ti.member_id = m.id
+            LEFT JOIN tactic_screenshots ts ON ti.id = ts.tactic_id AND ti.thumbnail = ts.step
             WHERE
             '''
 
@@ -216,6 +222,7 @@ async def get_member_tactics(page: int, userName: str = Query(None), userID: int
                             "update_time":tactic["update_time"].isoformat(),
                             "finished":tactic["finished"],
                             "status": tactic["status"],
+                            "thumbnail_url": tactic["thumbnail_url"]
                         }
                         for tactic in tactics
                     ]
@@ -533,8 +540,8 @@ async def update_thumbnail(tactic_id: int, step: int, file: UploadFile):
 
             await cursor.execute(check_query, (tactic_id, step))
             result = await cursor.fetchone()
-            print("檢查結果")
-            print(result)
+            # print("檢查結果")
+            # print(result)
 
             if result[0] == 0:
                 # 沒有紀錄，則執行 INSERT
@@ -543,11 +550,11 @@ async def update_thumbnail(tactic_id: int, step: int, file: UploadFile):
                 VALUES (%s, %s, %s)
                 '''
                 await cursor.execute(insert_query, (tactic_id, step, new_url))
-                print("新增")
-                print(insert_query)
-                print(tactic_id)
-                print(step)
-                print(new_url)
+                # print("新增")
+                # print(insert_query)
+                # print(tactic_id)
+                # print(step)
+                # print(new_url)
             else:
                 # 有紀錄，則執行 UPDATE
                 update_query = '''
@@ -556,11 +563,11 @@ async def update_thumbnail(tactic_id: int, step: int, file: UploadFile):
                 WHERE tactic_id = %s AND step = %s
                 '''
                 await cursor.execute(update_query, (new_url, tactic_id, step))
-                print("更新")
-                print(update_query)
-                print(tactic_id)
-                print(step)
-                print(new_url)
+                # print("更新")
+                # print(update_query)
+                # print(tactic_id)
+                # print(step)
+                # print(new_url)
 
         await conn.ensure_closed()
 

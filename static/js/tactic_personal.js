@@ -85,15 +85,15 @@ document.addEventListener("DOMContentLoaded", () => {
             col.className = "col-md-6";
     
             const card = document.createElement("div");
-            card.className = "card tactic-card mb-4 shadow-lg";
+            card.className = "card mb-4 shadow-lg";
             card.addEventListener("click", function() {
                 window.location.href = `/tactic/${tactic.id}`;
             });
             card.style.cursor = "pointer"; 
     
             const tumbnail = document.createElement("img");
-            tumbnail.className = "card-img-top";
-            tumbnail.src ="/static/images/tumbnail.png";
+            tumbnail.className = "card-img-top thumbnail";
+            tumbnail.src = tactic.thumbnail_url || "/static/images/tumbnail.png";
             tumbnail.alt = "戰術縮圖";
     
             const cardBody = document.createElement("div");
