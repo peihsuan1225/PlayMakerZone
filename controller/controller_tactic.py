@@ -324,6 +324,24 @@ async def get_tactic(tactic_id=None, user=None):
     except Exception as e:
         return {"error": True, "message": str(e)}, 500
     
+async def reset_tactic_content(tactic_id: int):
+    try:
+        conn = await get_db_connection()
+        async with conn.cursor() as cursor:
+            reset_query = '''
+            DELETE FROM tactic_details
+            WHERE tactic_id = %s
+            '''
+            await cursor.execute(reset_query, (tactic_id,))
+
+            result = {"response": f"tactic deleted id = {tactic_id}"}
+            return result, 200
+            
+    except Exception as e:
+        return {"error": True, "message": str(e)}, 500
+    
+    finally:
+        await conn.ensure_closed()
 
 async def save_tactic_content(tacticContent_input: TacticContentRequest):
     # print(tacticContent_input)
@@ -499,9 +517,10 @@ async def update_thumbnail(tactic_id: int, step: int, file: UploadFile):
 
             await cursor.execute(get_oldurl_query, (tactic_id,))
             result = await cursor.fetchone()
+            # print(result)
 
             if result:
-                old_image_url = result['image_url']
+                old_image_url = result[2]
 
                 if old_image_url and old_image_url.startswith("https://"):
                     parsed_url  = urlparse(old_image_url)
@@ -574,5 +593,24 @@ async def update_thumbnail(tactic_id: int, step: int, file: UploadFile):
         return {"success": True}, 200
     
     except Exception as e:
+        print(str(e))
         return {"error": True, "message": str(e)}, 500
     
+async def check_tacticOwner(tactic_id, user):
+    conn = await get_db_connection()
+    async with conn.cursor(aiomysql.DictCursor) as cursor:
+        query = '''
+        SELECT member_id
+        FROM tactics_info
+        WHERE ID = %s
+        '''
+        await cursor.execute(query, (tactic_id,))
+        creator = await cursor.fetchone()
+
+        if creator and creator["member_id"] == user["id"]:
+            result = {"response": True, "message": "Tactic owner verification succeed."}
+            return result, 200
+
+        else:
+            result = {"error": True, "message": "Tactic owner verification failed."}
+            return result, 403

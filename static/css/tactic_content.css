@@ -93,6 +93,17 @@ button{
     margin-left: auto;
 }
 
+#editbtn {
+    border-radius: 5px;
+    color: #FFFFFF;
+    background-color: #63788b;
+}
+
+#editbtn:hover{
+    background-color: #4d5e6d;
+    color: #FFFFFF;
+}
+
 #tactic-board {
     /* width: 80vw; */
     /* margin: 0 auto; */
@@ -116,6 +127,14 @@ button{
 
 #edit_tacticContent{
     display: none;
+    border-radius: 5px;
+    color: #FFFFFF;
+    background-color: #63788b;
+}
+
+#edit_tacticContent:hover{
+    background-color: #4d5e6d;
+    color: #FFFFFF;
 }
 
 /* 

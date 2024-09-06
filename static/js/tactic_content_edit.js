@@ -17,14 +17,21 @@ document.addEventListener('DOMContentLoaded', () => {
                         "Content-Type": "application/json"
                     }
                 });
-    
+                  
                 const data = await response.json();
     
                 if (data.error) {
                     console.error('Error fetching tactic data:', data.message);
                 } else {
                     fetchedInfo = true;
-                    setupBoard(data.data);
+                    let status = await content_check(tacticId);
+                    if (status === "noContent") {
+                        setupBoard(data.data);
+                    } else if (status === "contentLoaded") {
+                        console.log("Tactic content loaded successfully.");
+                    } else if (status === "error") {
+                        console.error("Error occurred while fetching tactic content.");
+                    }
                 }
             }
     
@@ -45,12 +52,113 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem("tactic_id", data.data.id);
                 }
             }
-        } catch (error) {
+
+        }catch (error) {
             console.error('Error fetching tactic data:', error);
         }
+    
     }
 
     fetchTactic();
+
+    async function content_check(id) {
+        try {
+            const response = await fetch("/api/tactic/content?tactic_id=" + id, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            const result = await response.json();
+            
+            if (result.error) {
+                return "noContent";  // Return this value to the caller
+            } else {
+                data_to_localstorage(result);
+                setupBoard_content(result);
+                return "contentLoaded";  // Return a status indicating success
+            }
+        } catch (error) {
+            console.error('Error fetching tactic content:', error);
+            return "error";  // Return an error status if fetching fails
+        }
+    }
+
+    function data_to_localstorage(result) {
+        // 遍歷 result.data 中的每個步驟
+        result.data.forEach(stepData => {
+            const step = stepData.step;
+            const playerA = JSON.parse(stepData.player_A);
+            const playerB = JSON.parse(stepData.player_B);
+            const ball = JSON.parse(stepData.ball);
+    
+            const positions = {};
+    
+            playerA.forEach(player => {
+                positions[player.id] = { x: player.x, y: player.y };
+            });
+    
+            playerB.forEach(player => {
+                positions[player.id] = { x: player.x, y: player.y };
+            });
+    
+            ball.forEach(ballItem => {
+                positions[ballItem.id] = { x: ballItem.x, y: ballItem.y };
+            });
+    
+            localStorage.setItem(`positions_step_${step}`, JSON.stringify(positions));
+        });
+    }
+
+    function setupBoard_content(tactic) {
+        const tactic_steps = document.querySelector("#tactic-steps");
+        tactic_steps.style.display = "flex";
+
+        const description = document.querySelector('#description');
+        const tacticBoard = document.querySelector('#tactic-board');
+        const tactic_name_dispaly = document.querySelector("#tactic_name") 
+        const player_number = tactic.player
+    
+        // console.log(tagsArray);
+        // console.dir(tagsArray[0]);
+
+        tacticBoard.innerHTML = '';
+
+        const court = document.createElement("img")
+        const backgroundImage = tactic.court === '全場' ? 'fullcourt.png' : 'halfcourt.png';
+        court.src = `/static/images/${backgroundImage}`;
+        court.id = "court";
+        tacticBoard.appendChild(court);
+
+        for (let i = 1; i <= player_number; i++) {
+            const playerA = document.createElement('div');
+            playerA.id = `A${i}`;
+            playerA.className = 'player draggable';
+            playerA.textContent = i;
+            tacticBoard.appendChild(playerA); 
+        }
+        for (let i = 1; i <= player_number; i++) {
+            const playerB = document.createElement('div');
+            playerB.id = `B${i}`;
+            playerB.className = 'player draggable';
+            playerB.textContent = i;
+            tacticBoard.appendChild(playerB);
+        }
+        
+        const ball = document.createElement('div');
+        ball.id = `ball`;
+        ball.className = 'draggable';
+        tacticBoard.appendChild(ball);
+
+        loadPositions();
+
+        document.querySelector('#total-steps').innerText = tactic.data.length;
+        totalSteps_number = tactic.data.length;
+        currentStep_number = 1;
+        document.querySelector('#current-step').innerText = currentStep_number;
+    }
+
+
 
     function setupBoard(tactic) {
         const edit_element = document.querySelector("#tactic-steps");
@@ -231,6 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveButton = document.querySelector('#save');
 
     addStep.addEventListener("click", () => {
+        let totalSteps_number = parseInt(document.querySelector('#total-steps').innerText);
         if (currentStep_number == totalSteps_number && totalSteps_number == 1) {
             saveThumbnailToSessionStorage(currentStep_number);
         }
@@ -244,6 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     prevStep.addEventListener('click', () => {
+        let totalSteps_number = parseInt(document.querySelector('#total-steps').innerText);
         if (currentStep_number > 1) {
             if (totalSteps_number > currentStep_number && changed) {
                 // console.log('已更動的元素:', Array.from(changedElements));
@@ -272,6 +382,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     nextStep.addEventListener('click', () => {
+        let totalSteps_number = parseInt(document.querySelector('#total-steps').innerText);
         if (currentStep_number < totalSteps_number) {
             if (changed){
                 console.log('已更動的元素:', Array.from(changedElements));
@@ -306,8 +417,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const totalSteps = parseInt(document.querySelector('#total-steps').innerText);
             const promises = []; 
             
-            const uploadThumbnailPromise = uploadThumbnailToBackend();
-            promises.push(uploadThumbnailPromise);
+            const keyPrefix = 'thumbnail_';
+            const thumbnailKey = Object.keys(sessionStorage).find(k => k.startsWith(keyPrefix));
+            if (thumbnailKey) {
+                const uploadThumbnailPromise = uploadThumbnailToBackend();
+                promises.push(uploadThumbnailPromise);
+            }
             
             // Loop through each step and save its data
             for (let step = 1; step <= totalSteps; step++) {
@@ -393,7 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.removeItem("tactic_id_p");
             }
 
-            const keyPrefix = 'thumbnail_';
+            
             const existingKey = Object.keys(sessionStorage).find(k => k.startsWith(keyPrefix));
             if (existingKey) {
                 sessionStorage.removeItem(existingKey);
@@ -446,6 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     function nextStepFunction() {
+        let totalSteps_number = parseInt(document.querySelector('#total-steps').innerText);
         if (currentStep_number < totalSteps_number) {
             currentStep_number++;
         } else {
@@ -456,10 +572,81 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const resetBtn = document.querySelector("#reset");
-    resetBtn.addEventListener("click", function() {
+    resetBtn.addEventListener("click", async function() {
         const confirmed = confirm("重置後不可復原，請確認是否重置所有戰術內容?");
         if(confirmed){
-            window.location.reload();
+            const tacticId = localStorage.getItem("tactic_id_p");
+            if (tacticId) {
+                const response = await fetch("/api/tactic/info?tactic_id=" + tacticId, {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+                  
+                const data = await response.json();
+    
+                if (data.error) {
+                    console.error('Error fetching tactic data:', data.message);
+                } else {
+                    setupBoard(data.data);
+                    const keysToRemove = [];
+
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key.startsWith('positions_step_')) {
+                            keysToRemove.push(key);
+                        }
+                    }
+                    
+                    keysToRemove.forEach((key) => {
+                        localStorage.removeItem(key);
+                    });
+                    
+                    if (localStorage.tactic_id) {
+                        localStorage.removeItem("tactic_id");
+                    }
+
+                    const total_steps = document.querySelector("#total-steps");
+                    total_steps.innerText = "1";
+
+                    const keyPrefix = 'thumbnail_';        
+
+                    const existingKey = Object.keys(sessionStorage).find(k => k.startsWith(keyPrefix));
+                    if (existingKey) {
+                        sessionStorage.removeItem(existingKey);
+                    }
+
+                    const star = document.querySelector("#star");
+                    star.style.backgroundImage = "url(/static/images/star_empty.png)";
+
+                    fetch(`/api/tactic/content?tactic_id=${tacticId}`,{
+                        method: "DELETE",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("Reset成功！");
+                            window.location.reload();
+                        } else {
+                            return response.json().then(data => {
+                                if (data.error) {
+                                    alert("Reset失敗：" + data.message);
+                                }
+                                else {
+                                    alert("Reset失敗：未知錯誤。");
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Reset失敗:', error);
+                        alert("發生錯誤，請稍後再試。");
+                    });
+                }
+            }
         }
     });
 

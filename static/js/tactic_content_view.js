@@ -66,6 +66,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setupBoard(tactic) {
+        const token = localStorage.getItem("token");
+        if(token){
+            fetch(`/api/tactic/verificate?tactic_id=${id}`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json().then(data => {
+                        console.log(data.message);
+                       
+                        const editBtn = document.querySelector("#editbtn");
+                        editBtn.classList.remove("d-none");
+
+                        editBtn.addEventListener("click",() => {
+                            localStorage.setItem("tactic_id_p", id);
+                            window.location.href = "/createTactic/content";
+                        })
+                    })
+                } else {
+                    return response.json().then(data => {
+                        if (data.error) {
+                            console.log(data.message);
+                        }
+                        else {
+                            console.log("驗證失敗：未知錯誤。");
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('驗證失敗:', error);
+                alert("發生錯誤，請稍後再試。");
+            });
+        }
+
         const tactic_steps = document.querySelector("#tactic-steps");
         tactic_steps.style.display = "flex";
 
