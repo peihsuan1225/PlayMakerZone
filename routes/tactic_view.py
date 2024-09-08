@@ -35,6 +35,10 @@ async def get_peronal_tactics(page: int = Query(0, ge=0), userName: str = Query(
 async def get_homepage(request: Request):
     return FileResponse("./static/html/tactic_personal.html", media_type="text/html")
 
+@router.get("/personalTactics/{username}", response_class=FileResponse)
+async def get_homepage(request: Request, username:str):
+    return FileResponse("./static/html/tactic_personal.html", media_type="text/html")
+
 @router.get("/tactic/{tactic_id}", response_class=FileResponse)
 async def get_tactic_content(request: Request, tactic_id: int):
     return FileResponse("./static/html/tactic_content_view.html", media_type="text/html")

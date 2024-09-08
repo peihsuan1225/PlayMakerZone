@@ -152,7 +152,7 @@ async def get_member_tactics(page: int, userName: str = Query(None), userID: int
         async with conn.cursor(aiomysql.DictCursor) as cursor:
 
             base_query = '''
-            SELECT ti.*, m.username, ts.image_url as thumbnail_url
+            SELECT ti.*, m.username, m.avatar, m.about_me, ts.image_url as thumbnail_url
             FROM tactics_info ti
             JOIN member m ON ti.member_id = m.id
             LEFT JOIN tactic_screenshots ts ON ti.id = ts.tactic_id AND ti.thumbnail = ts.step
@@ -175,7 +175,7 @@ async def get_member_tactics(page: int, userName: str = Query(None), userID: int
             if userName:
                 conditions.append("m.username = %s")
                 params.append(userName)
-                conditions.append("ti.status = 公開")
+                conditions.append("ti.status = '公開'")
                 conditions.append("ti.finished = 1")
 
             # 本人>用member_id去撈，不用作狀態篩選，全部資料都撈
@@ -193,11 +193,15 @@ async def get_member_tactics(page: int, userName: str = Query(None), userID: int
             base_query += " ORDER BY ti.update_time DESC LIMIT %s OFFSET %s"
             params.extend([tactics_per_page, offset])
 
+            # print(count_query)
+            # print(params)
             # 計算總筆數，params的最後兩個參數忽略(計算筆數不需要分頁)
             await cursor.execute(count_query, params[:-2])
             countResult = await cursor.fetchone()
             total_items = countResult["total"]
 
+            # print(base_query)
+            # print(params)
             # 抓取(所有or有條件)景點資料，12筆為一頁
             await cursor.execute(base_query, params)
             tactics = await cursor.fetchall()
@@ -222,7 +226,9 @@ async def get_member_tactics(page: int, userName: str = Query(None), userID: int
                             "update_time":tactic["update_time"].isoformat(),
                             "finished":tactic["finished"],
                             "status": tactic["status"],
-                            "thumbnail_url": tactic["thumbnail_url"]
+                            "thumbnail_url": tactic["thumbnail_url"],
+                            "avatar":tactic["avatar"],
+                            "about_me":tactic["about_me"]
                         }
                         for tactic in tactics
                     ]

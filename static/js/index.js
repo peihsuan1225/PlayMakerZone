@@ -101,6 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const userName = document.createElement("a");
             userName.className = "creator-id d-inline ml-2";
             userName.innerText = tactic.username;
+            userName.addEventListener("click", function(event) {
+                userTactic(event, tactic.username);
+            });
     
             const cardText1 = document.createElement("p");
             cardText1.className = "card-text mt-2";
@@ -169,4 +172,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     fetchAndDisplayTactics();
+
+    function userTactic(event, username){
+        event.stopPropagation();
+        window.location.href = `/personalTactics/${username}`;
+    }
+
 });

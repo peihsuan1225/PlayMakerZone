@@ -1,45 +1,54 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const token = localStorage.getItem('token');
-    if (token){
-         fetch("/api/user/auth", {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        })
-        .then(response => {
-            if(!response.ok){
-                const container = document.querySelector(".container");
-                container.innerHTML = "";
-                container.innerHTML = "獲取個人資料出錯";
-                return;
-            }
-            return response.json();
-        })
-        .then(data => {
-            if(data && data.data){
-                const user = data.data
-                get_personal_tactics(user);
-                displayMyProfile(user);
-            }
-            else{
-                const container = document.querySelector(".container");
-                container.innerHTML = "";
-                container.innerHTML = "身分驗證失敗";
-            }
-        })
-    }else{
-        window.location.href = "/";
-        return;
+    const currentPath = window.location.pathname;
+
+    if (currentPath === '/myTactics') {
+        const token = localStorage.getItem('token');
+        if (token){
+             fetch("/api/user/auth", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                if(!response.ok){
+                    const container = document.querySelector(".container");
+                    container.innerHTML = "";
+                    container.innerHTML = "獲取個人資料出錯";
+                    return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if(data && data.data){
+                    const user = data.data
+                    get_personal_tactics(user);
+                    displayMyProfile(user);
+                }
+                else{
+                    const container = document.querySelector(".container");
+                    container.innerHTML = "";
+                    container.innerHTML = "身分驗證失敗";
+                }
+            })
+        }else{
+            window.location.href = "/";
+            return;
+        }
+    }
+    else if (currentPath.startsWith('/personalTactics')) {
+        const segments = currentPath.split('/');
+        const username = segments[2];
+        get_personal_tactics(username);
     }
 
     function get_personal_tactics (user) {
         const queryParams = new URLSearchParams();
         if (user.id) {
             queryParams.append('userID', user.id); 
-        } else if (user.username) {
-            queryParams.append('userName', user.username); 
+        } else if (user) {
+            queryParams.append('userName', user); 
         }
 
         fetch(`/api/personal/tactics?${queryParams.toString()}`, {
@@ -69,6 +78,15 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             else {
                 displayMyTactics(data.data);
+                if(currentPath.startsWith('/personalTactics')){
+                    // console.log(data.data)
+                    const user = {
+                        avatar: data.data[0]["avatar"],
+                        username: data.data[0]["username"],
+                        about_me: data.data[0]["about_me"]
+                    }
+                    displayMyProfile(user);
+                }
             }
         });
     }
@@ -95,16 +113,17 @@ document.addEventListener("DOMContentLoaded", () => {
             tumbnail.className = "card-img-top thumbnail";
             tumbnail.src = tactic.thumbnail_url || "/static/images/tumbnail.png";
             tumbnail.alt = "戰術縮圖";
-    
+            
             const cardBody = document.createElement("div");
             cardBody.className = "card-body";
-    
+            
             const cardText0 = document.createElement("div");
             cardText0.className = "d-flex";
 
             const tacticName = document.createElement("h5");
             tacticName.className = "card-title d-inline";
             tacticName.innerText = tactic.name;
+            cardText0.appendChild(tacticName);
 
             const statusEye = document.createElement("img");
             statusEye.className = "status-img";
@@ -114,16 +133,20 @@ document.addEventListener("DOMContentLoaded", () => {
             else if (tactic.status === "私人"){
                 statusEye.src = "/static/images/privateeye.jpg";
             }
+            cardText0.appendChild(statusEye);
 
-            const deleteDIv = document.createElement("div");
-            deleteDIv.className = "text-end";
-            const delete_icon = document.createElement("img");
-            delete_icon.src = "/static/images/delete.png";
-            delete_icon.style = "width:25px"
-            deleteDIv.appendChild(delete_icon);
-            deleteDIv.addEventListener("click", function(event) {
-                deleteTactic(event, tactic.id);
-            });
+            if (currentPath === '/myTactics'){
+                const deleteDIv = document.createElement("div");
+                deleteDIv.className = "text-end";
+                const delete_icon = document.createElement("img");
+                delete_icon.src = "/static/images/delete.png";
+                delete_icon.style = "width:25px"
+                deleteDIv.appendChild(delete_icon);
+                deleteDIv.addEventListener("click", function(event) {
+                    deleteTactic(event, tactic.id);
+                });
+                cardText0.appendChild(deleteDIv);
+            }
 
             const cardText1 = document.createElement("p");
             cardText1.className = "card-text";
@@ -178,9 +201,6 @@ document.addEventListener("DOMContentLoaded", () => {
             card.appendChild(tumbnail);
             card.appendChild(cardBody);
             cardBody.appendChild(cardText0);
-            cardText0.appendChild(tacticName);
-            cardText0.appendChild(statusEye);
-            cardText0.appendChild(deleteDIv);
             cardBody.appendChild(cardText1);
             cardBody.appendChild(cardText2);
             cardBody.appendChild(cardText3);
