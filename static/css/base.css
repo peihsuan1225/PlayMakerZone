@@ -1,6 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap');
-body{
+body {
     margin: 0;
     padding: 0;
     font-size: 16px;
@@ -11,11 +11,11 @@ body{
     background-color: #fafafa;
 }
 
-a{
+a {
     cursor: pointer;
 }
 
-.faded{
+.faded {
     opacity: 65%;
 }
 
@@ -83,14 +83,14 @@ a{
 }
 
 /* dialog section */
-.dialog_insert{
+.dialog_insert {
     position: fixed;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
     top: 0;
 }
-.dialog__block{
+.dialog__block {
     display: none;
     width: 500px;
     border-radius: 10px;
@@ -101,20 +101,20 @@ a{
     box-shadow: 0px 4px 60px 0px #63788b;
     border: #63788ba8 solid 3px;
 }
-.display{
+.display {
     display: block;
 }
-.dialog__bar{
+.dialog__bar {
     height: 10px;
     background: linear-gradient(270deg, #337788 0%, #66AABB 100%);
 }
-.dialog__text--title{
+.dialog__text--title {
     font-size: 24px;
     font-weight: bold;
     color: #666666;
     margin: 30px 0 15px 15px;
 }
-.dialog__icon--close{
+.dialog__icon--close {
     position: absolute;
     top: 27px;
     right: 17px;
@@ -124,7 +124,7 @@ a{
     height: 16px;
     cursor: pointer;
 }
-.dialog__input{
+.dialog__input {
     background-color: #FFFFFF;
     border: #CCCCCC solid 1px;
     border-radius: 5px;
@@ -136,7 +136,7 @@ a{
     width: calc(100% - 30px);
     padding-left: 15px;
 }
-.dialog__btn{
+.dialog__btn {
     background-color: #63788b;
     border: none;
     border-radius: 5px;
@@ -147,12 +147,16 @@ a{
     width: calc(100% - 30px);
     cursor: pointer;
 }
-.dialog__text--error{
+#sign_in_test_account_btn {
+    background-color: #c6dacf;
+    color: #63788b;
+}
+.dialog__text--error {
     color: red;
     text-align: center;
     margin: 0 15px 15px 15px;
 }
-.dialog__text--switch{
+.dialog__text--switch {
     font-weight: 500;
     color: #666666;
     margin: 0 15px 15px 15px;
@@ -160,12 +164,12 @@ a{
     text-align: center;
     cursor: pointer;
 }
-.dialog__text--switch:hover{
+.dialog__text--switch:hover {
     text-decoration:underline;
 }
 
 /* Footer */
-footer{
+footer {
     position: sticky;
     bottom: 0;
     width: 100vw;

@@ -329,6 +329,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
+            // 使用測試帳號
+            const testAccountBtn = document.querySelector("#sign_in_test_account_btn");
+            testAccountBtn.addEventListener("click", (event) =>{
+                document.querySelector("#signin_email_input").value = "testn@test.com";
+                document.querySelector("#signin_password_input").value = "test";
+                signinSignup.click();
+            })
+
         } else {
             console.error('Error: Element with class "dialog" not found in base.html.');
         }
