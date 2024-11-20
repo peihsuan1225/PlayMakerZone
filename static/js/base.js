@@ -334,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
             testAccountBtn.addEventListener("click", (event) =>{
                 document.querySelector("#signin_email_input").value = "testn@test.com";
                 document.querySelector("#signin_password_input").value = "test";
-                signinSignup.click();
+                signinBtn.click();
             })
 
         } else {
